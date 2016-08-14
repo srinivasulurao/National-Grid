@@ -1,0 +1,50 @@
+<rn:meta title="#rn:php:\RightNow\Libraries\SEO::getDynamicTitle('PublicProfile', \RightNow\Utils\Url::getParameter('user'), array('suffix' => ' - ' . \RightNow\Utils\Config::getMessage(PROFILE_LC_LBL)))#" template="standard.php" clickstream="public_profile"/>
+
+<div class="rn_Hero">
+    <div class="rn_Container">
+        <div class="rn_UserInfo">
+            <div class="rn_AvatarAlignment">
+                <rn:widget path="user/AvatarDisplay"/>
+                <? if (\RightNow\Utils\Permissions\Social::userCanEdit('AvatarOrDisplayName')): ?>
+                    <div class="rn_EditSocialFields"><i class="fa fa-pencil-square-o"></i> <a href="/app/public_profile_update/#rn:url_param:user#">#rn:msg:UPDATE_CMD#</a></div>
+                <? endif; ?>
+            </div>
+
+            <div class="rn_UserDetails">
+                <h1><rn:field name="SocialUser.DisplayName"/></h1>
+                #rn:msg:MEMBER_SINCE_LBL# <span itemprop="dateCreated"><rn:field name="SocialUser.CreatedTime" /></span>
+            </div>
+            <rn:widget path="user/UserStatus"/>
+        </div>
+    </div>
+</div>
+
+<div class="rn_PublicProfile rn_Container">
+    <div class="rn_ContentDetail">
+        <div class="rn_ModerationToolbar">
+            <div>
+                <rn:condition is_social_user_moderator="true">
+                    <rn:widget path="moderation/ModerationInlineAction" object_type="SocialUser" object_id="#rn:php:\RightNow\Utils\Url::getParameter('user')#" refresh_page_on_moderator_action="true"/>
+                </rn:condition>
+            </div>
+        </div>
+        <rn:widget path="user/UserActivity"/>
+    </div>
+
+    <div class="rn_SideRail">
+        <rn:widget path="moderation/ModerationProfile"/>
+
+        <div class="rn_ProfileSearch">
+            <fieldset>
+                <legend>#rn:msg:SEARCH_USERS_CONTRIBUTIONS_LBL#</legend>
+                <rn:widget path="search/SimpleSearch" report_page_url="/app/social/questions/list" add_params_to_url="author:userFromUrl"/>
+            </fieldset>
+        </div>
+
+        <rn:widget path="user/UserContributions"/>
+
+        <div class="rn_DetailTools rn_AdditionalInfo">
+            <rn:widget path="utils/PrintPageLink"/>
+        </div>
+    </div>
+</div>

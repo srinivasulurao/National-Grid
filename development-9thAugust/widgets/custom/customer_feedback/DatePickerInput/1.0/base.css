@@ -1,0 +1,11 @@
+/**
+ * base.css: Base CSS for DatePickerInput
+ */
+.rn_DatePickerInput {
+
+}
+
+.rn_ProductCategoryInput button.rn_DisplayButton,select{
+padding:10px;
+border-radius:4px;
+}
