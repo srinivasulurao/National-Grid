@@ -1254,5 +1254,42 @@ public function contactLookUpSearchModel($input){
 	
 }
 
+public function setInvestigationClosureModel($data,$i_id){
+	$arr=array();
+        $formData = $this->processFields($data, $presentFields);
+        try{
+            $incident = RNCPHP\Incident::fetch($i_id);
+
+            if($formData['Incident.CustomFields.c.was_there_a_problem']->value)
+            $incident->CustomFields->c->was_there_a_problem=$formData['Incident.CustomFields.c.was_there_a_problem']->value;
+			if($formData['Incident.CustomFields.c.why1']->value)
+            $incident->CustomFields->c->why1=$formData['Incident.CustomFields.c.why1']->value;
+			if($formData['Incident.CustomFields.c.why2']->value)
+            $incident->CustomFields->c->why2=$formData['Incident.CustomFields.c.why2']->value;
+			if($formData['Incident.CustomFields.c.why3']->value)
+            $incident->CustomFields->c->why3=$formData['Incident.CustomFields.c.why3']->value;
+            if($formData['Incident.CustomFields.c.why4']->value)
+            $incident->CustomFields->c->why4=$formData['Incident.CustomFields.c.why4']->value;
+			if($formData['Incident.CustomFields.c.why5']->value)
+            $incident->CustomFields->c->why5=$formData['Incident.CustomFields.c.why5']->value;
+			 
+                
+            $incident->save(RNCPHP\RNObject::SuppressAll);
+            RNCPHP\ConnectAPI::commit();
+
+
+            $arr['result']['transaction']['incident']['key']="i_id";
+            $arr['result']['transaction']['incident']['value']=$incident->ID;
+            $arr['result']['sessionParam']="/";
+
+        }
+        catch(RNCPHP\ConnectAPIError $err){
+            $arr['errorMessage']=$err->getMessage()."@".$err->getLine();
+        }
+
+        return json_encode($arr);
+
+}
+
 
 } //Class Ends Here !

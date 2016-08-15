@@ -38,3 +38,17 @@ function showTabContent(val){
 			document.getElementById('tab1').className="tabs tab-active";
 		}
 	}
+	
+function playToggle(x){
+	YUI().use('transition','event','panel', function(Y) {
+			            	add_button_text=document.getElementById('plus_minus'+x).innerHTML;
+			            	if(add_button_text=="+"){
+			            	Y.one('.investigation-playstation-'+x).show(true);
+			            	document.getElementById('plus_minus'+x).innerHTML="-";
+			            	}
+			            	else{
+			            	Y.one('.investigation-playstation-'+x).hide(true);
+			            	document.getElementById('plus_minus'+x).innerHTML="+";
+			            	}
+     });
+}

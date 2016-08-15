@@ -1,0 +1,15 @@
+/**
+ * base.css: Base CSS for InvestigationClosure
+ */
+.rn_InvestigationClosure {
+
+}
+
+.rn_Label{
+	width:100%;
+	display:block;
+}
+
+.rn_SelectionInput fieldset{
+	margin-bottom:-20px !important;
+}

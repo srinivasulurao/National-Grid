@@ -1,0 +1,113 @@
+version: "1.0"
+requires:
+  jsModule: [standard, mobile]
+attributes:
+  label_input:
+    name: rn:msg:INPUT_LABEL_LBL
+    type: string
+    description: rn:msg:LABEL_DISPLAY_INPUT_CONTROL_LBL
+    default: '{default_label}'
+  label_error:
+    name: rn:msg:ERROR_LABEL_LBL
+    type: string
+    description: rn:msg:PCT_S_IDENTIFY_FLD_NAME_ERR_MSGS_MSG
+  label_required:
+    name: rn:msg:REQUIRED_LABEL_LBL
+    type: string
+    description: rn:msg:LABEL_DISPLAY_REQUIREMENT_MESSAGE_LBL
+    default: rn:msg:PCT_S_IS_REQUIRED_MSG
+  name:
+    name: Combination of the package, table and field to input. This attribute should be in the form 'package.table.field'. Available are for all the custom objects.
+    type: string
+    description: rn:msg:COMBINATION_TB_FLD_INPUT_ATTRIB_MSG
+    required: true
+  required:
+    name: rn:msg:REQUIRED_LBL
+    type: boolean
+    description: rn:msg:SET_TRUE_FLD_CONT_VAL_CF_SET_REQD_MSG
+  hint:
+    name: rn:msg:HINT_LBL
+    type: string
+    description: rn:msg:HINT_TXT_DISP_FLD_CF_VAL_OVRRIDE_MSG
+  always_show_hint:
+    name: rn:msg:ALWAYS_SHOW_HINT_LBL
+    type: boolean
+    description: rn:msg:SET_TRUE_FLD_HINT_HINT_DISPLAYED_MSG
+  initial_focus:
+    name: rn:msg:INITIAL_FOCUS_LBL
+    type: boolean
+    description: rn:msg:SET_TRUE_FIELD_FOCUSED_PAGE_LOADED_MSG
+  validate_on_blur:
+    name: rn:msg:VALIDATE_ON_BLUR_LBL
+    type: boolean
+    description: rn:msg:VALIDATES_INPUT_FLD_DATA_REQS_FOCUS_LBL
+  always_show_mask:
+    name: rn:msg:ALWAYS_SHOW_MASK_LBL
+    type: boolean
+    description: rn:msg:SET_TRUE_FLD_MASK_VAL_EXPECTED_MSG
+    default: true
+  default_value:
+    name: rn:msg:DEFAULT_VALUE_LBL
+    type: string
+    description: rn:msg:DF_VL_PPULATE_FLD_CF_VAL_OVRRIDE_MSG
+  allow_external_login_updates:
+    name: rn:msg:ALLOW_EXTERNAL_LOGIN_UPDATES_LBL
+    type: boolean
+    description: rn:msg:ALLWS_USERS_AUTHENTICATE_CP_EXT_MSG
+  hide_hint:
+    name: rn:msg:HIDE_HINT_CMD
+    type: boolean
+    description: rn:msg:SPECIFIES_HINTS_HIDDEN_DISPLAYED_MSG
+  existing_contact_check_ajax:
+    name: rn:msg:EXISTING_CONTACT_CHECK_AJAX_LBL
+    type: ajax
+    description: rn:msg:ENDPOINT_EXISTING_CONT_CHECK_AJAX_LBL
+    default: /ci/ajaxRequest/checkForExistingContact
+  require_validation:
+    name: rn:msg:REQUIRE_VALIDATION_FIELD_LBL
+    type: boolean
+    description: rn:msg:SET_TRUE_ADD_ADDTLVALIDATION_FLD_MSG
+  maximum_length:
+    name: rn:msg:MAXIMUM_FIELD_LENGTH_LBL
+    type: int
+    description: rn:msg:RESTRICTION_MAX_CHARS_ALLOWED_MSG
+    default: 0
+    min: 0
+  minimum_length:
+    name: rn:msg:MINIMUM_FIELD_LENGTH_LBL
+    type: int
+    description: rn:msg:RESTRICTION_MINIMUM_CHARS_ENTERED_MSG
+    default: 0
+    min: 0
+  maximum_value:
+    name: rn:msg:MAXIMUM_FIELD_VALUE_LBL
+    type: int
+    description: rn:msg:RESTRICTION_MAX_INT_VAL_ALLOWED_MSG
+  minimum_value:
+    name: rn:msg:MINIMUM_FIELD_VALUE_LBL
+    type: int
+    description: rn:msg:RESTRICTION_MINIMUM_INT_VAL_ENTERED_MSG
+  label_validation_incorrect:
+    name: rn:msg:LABEL_VALIDATION_INCORRECT_LBL
+    type: string
+    description: rn:msg:ERR_LABEL_DISP_VALIDATION_FLD_PRIM_MSG
+    default: rn:msg:DOES_NOT_MATCH_PCT_S_LBL
+  label_validation:
+    name: rn:msg:LABEL_VALIDATION_LBL
+    type: string
+    description: rn:msg:LABEL_DISPLAY_VALIDATION_FIELD_MSG
+    default: rn:msg:RE_ENTER_PCT_S_LBL
+  textarea:
+    name: rn:msg:TEXT_AREA_LBL
+    type: boolean
+    description: rn:msg:SET_TRUE_DISP_FLD_MULTI_LN_TXT_MSG
+  datefield:
+    name: DateField
+    type: boolean
+    description: Add datefield as an attribute to display jQuery calender in the field. Date will be populated in mm/dd/yyyy format. Recommended to be associated with fields with Date as Datatype
+    default: false
+info:
+  description: This widget allows users to set field values of Custom Objects for the database table and field indicated in the name attribute. This widget can be used with custom objects of datatype Text, Integer, Date and Text Area field types. The widget displays a label along with an input field. If the field already has a value, that value displays with the widget and can be overwritten or set differently based on the user's actions. All usable system fields are listed on the Business Objects page of the Tag Gallery. 
+contains:
+- widget: standard/output/FieldDisplay
+  versions: ["1.1"]

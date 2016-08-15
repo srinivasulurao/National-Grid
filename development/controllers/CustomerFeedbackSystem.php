@@ -251,4 +251,11 @@ public function contactLookUpSearch(){
     $this->model('custom/CustomerFeedbackSystem')->contactLookUpSearchModel($input);
 }
 
+
+public function setInvestigationClosure($param,$i_id){
+	$data=json_decode($this->input->post('form'));
+	$response=$this->model('custom/CustomerFeedbackSystem')->setInvestigationClosureModel($data,$i_id);
+	echo $response;
+}
+
 }// Controller Class Ends here !
