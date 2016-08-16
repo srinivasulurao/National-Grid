@@ -1270,10 +1270,14 @@ public function setInvestigationClosureModel($data,$i_id){
             $incident->CustomFields->c->why3=$formData['Incident.CustomFields.c.why3']->value;
             if($formData['Incident.CustomFields.c.why4']->value)
             $incident->CustomFields->c->why4=$formData['Incident.CustomFields.c.why4']->value;
-			if($formData['Incident.CustomFields.c.why5']->value)
+			if($formData['Incident.CustomFields.c.why5']->value):
             $incident->CustomFields->c->why5=$formData['Incident.CustomFields.c.why5']->value;
+		    $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.root_cause']->value;		
+			endif;
+			if($formData['Incident.CustomFields.c.root_cause_category']->value)
+			$incident->CustomFields->c->root_cause_category=$formData['Incident.CustomFields.c.root_cause_category']->value;		
 			 
-                
+               
             $incident->save(RNCPHP\RNObject::SuppressAll);
             RNCPHP\ConnectAPI::commit();
 
