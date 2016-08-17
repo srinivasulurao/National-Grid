@@ -8,8 +8,8 @@
 		<span id='why3'><rn:widget path='input/TextInput' name="Incident.c$why3" label_input='Why #3<span class="rn_Required">*</span>' /></span>
 		<rn:widget path='input/TextInput' name="Incident.c$why4" />
 		<rn:widget path='input/TextInput' name="Incident.c$why5" />
-		<rn:widget path='input/SelectionInput' name="Incident.c$root_cause_category" />
+		<span id='rcc'><rn:widget path='input/SelectionInput' name="Incident.c$root_cause_category" label_input='Root Cause Category<span class="rn_Required">*</span>' /></span>
 	</div>
-	<rn:widget path="input/FormSubmit" label_button="Save" on_success_url="none" error_location="rn_err_validation" label_on_success_banner='Investigation Closure Details saved successfully!' /><br><br>
+	<rn:widget path="input/FormSubmit" label_button="Close Investigation" on_success_url="none" error_location="rn_err_validation" label_on_success_banner='Investigation Closure Details saved successfully!' /><br><br>
 </form>	
 </d

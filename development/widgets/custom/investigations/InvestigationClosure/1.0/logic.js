@@ -60,6 +60,7 @@ Custom.Widgets.investigations.InvestigationClosure = RightNow.Widgets.extend({
                var why1=document.getElementsByName('Incident.CustomFields.c.why1')[0].value;
                var why2=document.getElementsByName('Incident.CustomFields.c.why2')[0].value;
                var why3=document.getElementsByName('Incident.CustomFields.c.why3')[0].value;
+               var root_cause_category=document.getElementsByName('Incident.CustomFields.c.root_cause_category')[0].value;
                
                if(why1=="" || why2=="" || why3==""){
                	
@@ -109,7 +110,23 @@ Custom.Widgets.investigations.InvestigationClosure = RightNow.Widgets.extend({
 		                     
                	     RightNow.Event.fire("evt_formFieldValidationPass", eo);
                	 
-               	return true;
+               }
+               
+               
+               if(root_cause_category==""){
+               	
+               	     document.querySelector("#rcc label").style.color = "#c31c24";
+		             document.getElementsByName("Incident.CustomFields.c.root_cause_category")[0].style.background="#fefda0";
+		               	     
+               	     var commonErrorDiv = this.Y.one("#" + "rn_err_validation");
+				     errorString="<b><a href='javascript:void(0)' onclick=\"document.getElementsByName('Incident.CustomFields.c.root_cause_category')[0].focus(); return false;\">Please Select a Root Cause Category !</b><br>";
+				     commonErrorDiv.append(errorString);
+                     RightNow.Event.fire("evt_formFieldValidateFailure", eo);
+                     return false;
+               }
+               else{
+               	     document.querySelector("#rcc label").style.color = "#333";
+		             document.getElementsByName("Incident.CustomFields.c.root_cause_category")[0].style.background="white";
                }
                
             }

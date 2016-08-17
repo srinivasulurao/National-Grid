@@ -1197,12 +1197,13 @@ public function SaveThreadSendMailModel($data,$i_id){
 			//Also the send a mail to the client.
 			$client_mail=$formData['Contact.Emails.PRIMARY.Address']->value;
 			if($client_mail){
+				$email_base64=str_replace("=","",base64_encode($client_mail));
 				$html_body=<<<xyz
 				<div style='font-family:lucida sans unicode;line-height:30px'>
 				<b>Hello User,</b><br>
 				We need your inputs to take further action for the complaint No {$incident->LookupName}. <br>
 				Please click on the link given below to complete the procedure.<br>
-				<a href='https://cpchem.custhelp.com/app/fnt/update/i_id/{$incident->ID}'>Click To Respond</a>
+				<a href='https://cpchem.custhelp.com/app/fnt/update/$email_base64/i_id/{$incident->ID}'>Click To Respond</a>
 				<br><br>
 				Thanks a lot<br>
 				Chevron Team<br>
@@ -1257,6 +1258,7 @@ public function contactLookUpSearchModel($input){
 public function setInvestigationClosureModel($data,$i_id){
 	$arr=array();
         $formData = $this->processFields($data, $presentFields);
+		
         try{
             $incident = RNCPHP\Incident::fetch($i_id);
 
@@ -1275,8 +1277,9 @@ public function setInvestigationClosureModel($data,$i_id){
 		    $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.root_cause']->value;		
 			endif;
 			if($formData['Incident.CustomFields.c.root_cause_category']->value)
-			$incident->CustomFields->c->root_cause_category=$formData['Incident.CustomFields.c.root_cause_category']->value;		
-			 
+			$incident->CustomFields->c->root_cause_category=(int)$formData['Incident.CustomFields.c.root_cause_category']->value;		
+			//Also change the status to closed. 
+            $incident->StatusWithType->Status=2; //Incident Closed.
                
             $incident->save(RNCPHP\RNObject::SuppressAll);
             RNCPHP\ConnectAPI::commit();
