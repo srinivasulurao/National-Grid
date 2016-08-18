@@ -191,10 +191,64 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             });
             
             
-         
-            
-            
           }); //Events ends here.
+          
+          
+          
+//Add a calendar
+  //Calendar1      
+  var yahoo_yui=YUI();
+   yahoo_yui.use('calendar', 'datatype-date', 'cssbutton', function (G) { 
+
+      calendar = new G.Calendar({
+      contentBox: "#cacd",
+      width:'340px',
+      showPrevMonth: false,
+      showNextMonth: true,
+      minimumDate: new Date(1,1,2016)     
+     }).render();
+     
+     var dtdate = G.DataType.Date;
+       calendar.on("selectionChange", function (ev) {
+       var newDate = ev.newSelection[0];
+       G.one("#corrective_actions_completion_date").set('value',dtdate.format(newDate));
+       G.one("#cacd").toggleView();
+    });
+    
+    
+    G.all("#corrective_actions_completion_date,#toggleCalendar1").on('click', function (ev) {
+      G.one('#cacd').toggleView();
+      ev.preventDefault();
+      calendar.set('showPrevMonth', !(calendar.get("showPrevMonth")));
+    });
+    
+    //Calendar 2
+     calendar = new G.Calendar({
+      contentBox: "#cadd",
+      width:'340px',
+      showPrevMonth: false,
+      showNextMonth: true,
+      minimumDate: new Date(1,1,2016)     
+     }).render();
+     
+     
+     var dtdate = G.DataType.Date;
+       calendar.on("selectionChange", function (ev) {
+       var newDate = ev.newSelection[0];
+       G.one("#corrective_actions_due_date").set('value',dtdate.format(newDate));
+       G.one("#cadd").toggleView();
+    });
+    
+
+    G.all("#corrective_actions_due_date,#toggleCalendar2").on('click', function (ev) {
+      G.one('#cadd').toggleView();
+      ev.preventDefault();
+      calendar.set('showPrevMonth', !(calendar.get("showPrevMonth")));
+    });
+
+       
+}); // G use ends here.
+
     },
 
     /**

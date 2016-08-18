@@ -13,3 +13,7 @@
 .rn_SelectionInput fieldset{
 	margin-bottom:-20px !important;
 }
+
+#why_fields textarea{
+	height:55px !important;
+}

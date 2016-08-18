@@ -31,6 +31,8 @@ class CustomListFilter extends \RightNow\Libraries\Widget\Base {
 		$this->data['headers']=array('Reference #'=>'1_0',"Subject"=>"2_1","Contact Name"=>"3_2","Supplier Name"=>"4_3","PO Number"=>"6_5","Target Date"=>"5_4","Status"=>"6_5");
 		if($this->data['attrs']['page_entity']=="investigations")
 		$this->data['headers']=array('Reference #'=>'3_2',"Subject"=>"4_3","Customer Name"=>"5_4","Category"=>"6_5","Status"=>"7_6");
+		if($this->data['attrs']['page_entity']=="action_items")
+		$this->data['headers']=array('Description'=>'2_1',"ID"=>"1_0");
         return parent::getData();
 
     }

@@ -16,8 +16,10 @@
 </div>
 
 <div class="rn_PageContent rn_AskQuestion rn_Container cfl">
-<b><a href="/app/action_items/new" class='link_button' style='float:right'>New Action Items</a></b>
-<rn:widget path='custom/customer_feedback/ComplaintReportFilter' action="/app/action_items/list" label_name="Choose Items" />
+<rn:widget path='custom/customer_feedback/CustomListFilter' action="/app/action_items/list" page_entity="action_items" />
+<b><a href="/app/action_items/new" class='link_button' style='float:right;bottom: 7px;position: relative;'>New Action Items</a></b>
+
+<!--<rn:widget path='custom/customer_feedback/ComplaintReportFilter' action="/app/action_items/list" label_name="Choose Items" />--></rn:widget>
 			<div style="float:right;">
 			 </div>
 			<rn:widget path="custom/action_items/CBOMultilinelist" report_id="100041" per_page="10"/>

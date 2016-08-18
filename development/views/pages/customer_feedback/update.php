@@ -46,7 +46,8 @@ font-weight:bold;
                 <rn:widget path="input/TextInput"  name="Incident.Subject" default_value="" label_input="Subject" required="true" />
                 <rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" />
                 <rn:widget path="input/TextInput"  name="Incident.Threads" default_value="" label_input="Add to Thread"  required="true"/>
-                <rn:widget path="custom/customer_feedback/DatePickerInput"  name="Incident.c$target_date" label_input="Target Date" required="true"/> <br>
+                <rn:widget path="custom/customer_feedback/DatePickerInput"  name="Incident.c$target_date" label_input="Target Date" required="true"/>
+                <rn:widget path="input/SelectionInput"  name="Incident.c$formal_response" label_input="Formal Response" default_value='0' required="true"/>
                 <rn:widget path="input/SelectionInput"  name="Incident.c$draft" default_value="0"  label_input="Save as Draft"/> 
                 <rn:widget path="output/FileListDisplay"  name="Incident.fattach"/>
                 <rn:widget path="input/FileAttachmentUpload"/>

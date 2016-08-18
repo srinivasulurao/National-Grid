@@ -38,7 +38,8 @@ class CBOMultilinelist extends \RightNow\Widgets\Multiline {
 		endif;
 		
         $results = $this->CI->model('custom/ReportCustomModel')->getDataHTML($this->data['attrs']['report_id'], $reportToken, $filters, $format)->result;
-        //$this->freeBugger($results['headers']);
+        if($_GET['debug']=="pre")
+        $this->freeBugger($results['headers']);
 		
         if ($results['error'] !== null) {
             echo $this->reportError($results['error']);

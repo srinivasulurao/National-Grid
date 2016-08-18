@@ -35,6 +35,7 @@
 		<rn:widget path="custom/action_items/customDatePickerr" name="CFS.ActionItem.DueDate" label_input="Due Date" max_year="2100"/>		
 	        <rn:widget path="custom/action_items/CBOSelectionInput" name="CFS.ActionItem.Priority" required="true"  label_input="Priority" required="true"/>
 		<rn:widget path="custom/action_items/CBOSelectionInput" name="CFS.ActionItem.Status" required="true"  label_input="Status" required="true"/>
+		<!--<rn:widget path="custom/action_items/CBOFileListDisplay"  name="CFS$ActionItem.fattach" label_input="Saved Files" />--></rn:widget>
 		<rn:widget path="custom/action_items/CBOFileAttachmentUpload" name="CFS.ActionItem.Attachments"/> <br>
 		<rn:widget path="input/FormSubmit" label_button="Update Your Action Item" on_success_url="/app/action_items/list/" error_location="rn_ErrorLocation"/>
      

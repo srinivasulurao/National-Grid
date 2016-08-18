@@ -110,6 +110,7 @@ Custom.Widgets.customer_feedback.DeliveryLookupInput = RightNow.Widgets.extend({
         //#######################################################################################
         //################################Sold to customer Lookup Starts Here####################
         //#######################################################################################
+        if(document.getElementsByName("Incident.CustomFields.c.sold_to_customer_name").length)
              document.getElementsByName("Incident.CustomFields.c.sold_to_customer_name")[0].className="rn_Text sold_to_customer";
              
              var stc=Y.all('.sold_to_customer');
@@ -131,6 +132,7 @@ Custom.Widgets.customer_feedback.DeliveryLookupInput = RightNow.Widgets.extend({
 
             });
 
+if(document.getElementsByName("Incident.CustomFields.c.ship_to_customer_name").length)
          document.getElementsByName("Incident.CustomFields.c.ship_to_customer_name")[0].className="rn_Text ship_to_customer";
              
              var stc=Y.all('.ship_to_customer');
@@ -152,7 +154,7 @@ Custom.Widgets.customer_feedback.DeliveryLookupInput = RightNow.Widgets.extend({
 
             });
 
-
+if(document.getElementsByName("Incident.CustomFields.c.product_no").length)
          document.getElementsByName("Incident.CustomFields.c.product_no")[0].className="rn_Text product_no_to_customer";
              
              var stc=Y.all('.product_no_to_customer');

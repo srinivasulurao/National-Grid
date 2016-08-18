@@ -343,7 +343,7 @@ class ReportCustomModel extends \RightNow\Models\Report
 		//Condition for action items
 		############################################
         if(substr_count($_SERVER['REQUEST_URI'],"app/action_items/list") && $ci->session->getSessionData('complaint_filter_individual')=="c_id"){
-            $searchArgs['search_field0']=array("name"=>1,"oper"=>1,"val"=>$c_id);    
+            $searchArgs['search_field0']=array("name"=>3,"oper"=>1,"val"=>$c_id);    
         }
         if(substr_count($_SERVER['REQUEST_URI'],"app/action_items/list") && $ci->session->getSessionData('complaint_filter_individual')=="org_id"){
             $searchArgs['search_field0']=array("name"=>4,"oper"=>1,"val"=>$org_id);
@@ -409,9 +409,23 @@ class ReportCustomModel extends \RightNow\Models\Report
 				
 				}
 			}
+			
+			if($Uri_result[2]=='action_items' && $ci->session->getSessionData('complaint_filter')=='search_text')
+			{
+				
+				$srch=$ci->session->getSessionData('search_text');
+				$status_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName($srch);
+				if(!empty($srch))
+				{
+					$searchArgs['search_field0']=array("name"=>"3","oper"=>1,"val"=>$c_id);					
+					$searchArgs['search_field1']=array("name"=>"1","oper"=>7,"val"=>"%$srch%"); //Description
+					$searchArgs['search_field2']=array("name"=>"2","oper"=>7,"val"=>"%$srch%"); //ID
+					
+				}
+			}
         
 		   //$this->d($status_id);
-           //$this->d($searchArgs);
+           //$this->d($searchArgs); 
            
 		   
 

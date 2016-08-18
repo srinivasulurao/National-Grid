@@ -16,6 +16,7 @@ Custom.Widgets.customer_feedback.FormFunctionalityProvider = RightNow.Widgets.ex
             //###########################Don't Show Delivery Lookup in the edit page ################
             //#######################################################################################
             var inc_id=document.getElementById('form_incident_id').value;
+             document.getElementsByName('Incident.CustomFields.c.sold_to_customer_name')[0].disabled="true";
             if(inc_id){
                 document.getElementsByClassName("delivery_lookup")[0].disabled="true";  // Disable delivery no field.
                 document.getElementsByClassName("delivery_lookup")[0].style.width="85%";
@@ -23,7 +24,7 @@ Custom.Widgets.customer_feedback.FormFunctionalityProvider = RightNow.Widgets.ex
                 
                 
                 document.getElementsByName('Incident.CustomFields.c.request_type')[0].disabled="true"; //Disable Request Type.
-                document.getElementsByName('Incident.CustomFields.c.sold_to_customer_name')[0].disabled="true";
+               
             }
             
             //Preload The product related fields for edit page.

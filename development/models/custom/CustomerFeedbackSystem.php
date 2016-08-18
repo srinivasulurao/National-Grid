@@ -430,7 +430,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->StatusWithType->Status=($formData['Incident.CustomFields.c.draft']->value)?108:0; //Save as a draft option
             if($formData['c$target_date'])
                 $incident->CustomFields->c->target_date=strtotime($formData['c$target_date']->value);
-            if($formData['CFS$Delivery']):
+			if($formData['Incident.CustomFields.c.formal_response']->value)
+                $incident->CustomFields->c->formal_response=(int)$formData['Incident.CustomFields.c.formal_response']->value;
+            if($formData['CFS$Delivery']->value):
                 $delivery=$this->getDelivery($formData['CFS$Delivery']->value);
                 //$incident->CustomFields->c->sold_to_customer_name=$delivery['SoldToCustomerName'];
                 $incident->CustomFields->CFS->Delivery=intval($delivery['ID']);
@@ -551,8 +553,10 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->draft=intval($formData['Incident.CustomFields.c.draft']->value);
             if($formData['Incident.CustomFields.c.draft']->value)
                 $incident->StatusWithType->Status=($formData['Incident.CustomFields.c.draft']->value)?108:0; //Save as a draft option
-            if($formData['']->value)
+            if($formData['c$target_date']->value)
                 $incident->CustomFields->c->target_date=strtotime($formData['c$target_date']->value);
+			if($formData['Incident.CustomFields.c.formal_response']->value)
+                $incident->CustomFields->c->formal_response=(int)$formData['Incident.CustomFields.c.formal_response']->value;	
             if($formData['CFS$Delivery']->value):
                 $delivery=$this->getDelivery($formData['CFS$Delivery']->value);
                 //$incident->CustomFields->c->sold_to_customer_name=$delivery['SoldToCustomerName'];
