@@ -89,7 +89,7 @@ Custom.Widgets.customer_feedback.DeliveryProductSelection = RightNow.Widgets.ext
 
 function showHideProductFields(){
 var product_having_issue=document.getElementsByName('Incident.CustomFields.c.delivery_line_items')[0].value;
-alert(product_having_issue);
+//alert(product_having_issue);
 if(product_having_issue)	
 document.getElementById('product_related_fields').style.display="block";
 else

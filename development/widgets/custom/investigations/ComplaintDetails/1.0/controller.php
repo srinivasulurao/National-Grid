@@ -20,13 +20,17 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 	function getIncidentDetails(){
 		$i_id=getUrlParm('i_id');
 		$incident=$this->ci_instance->model('custom/CustomerFeedbackSystem')->investigationDetails($i_id);
-		//$this->d($incident->CustomFields->CFS->Delivery);
+		//$this->d($incident->PrimaryContact->Phones);
 		$displayParams=array();
 		
 		$displayParams['Complaint No']=$incident->LookupName;
 		$displayParams['Subject']=$incident->Subject;
 		$displayParams['Status']=$incident->StatusWithType->StatusType->LookupName;
 		$displayParams['Source']=$incident->Source->LookupName;
+		$displayParams['Assigned To']=$incident->AssignedTo->LookupName;
+		$displayParams['Created On']=date("Y-m-d H:i A",$incident->CreatedTime);
+		$displayParams['Severity']=$incident->Severity;
+		$displayParams['Interface']=$incident->Interface->LookupName;
 		
 		
 		return $displayParams;
@@ -42,6 +46,8 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 		$customer['Zip']=$incident->PrimaryContact->Address->PostalCode;
 		$customer['State']=$incident->PrimaryContact->Address->StateOrProvince;
 		$customer['Street']=$incident->PrimaryContact->Address->Street;
+		$customer['Organization']=$incident->Organization->LookupName;
+		$customer['Member Since']=date("Y-m-d H:i A",$incident->CreatedTime);
 		
 		
 		return $customer;

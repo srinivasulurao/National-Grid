@@ -11,7 +11,7 @@ $widget_id=str_replace("DatePickerInput_","",$widget_id);
 </div>
 
 <?php
-$dt=new DateTime();
+$dt=new \DateTime();
 $currentTimeStamp=$dt->getTimeStamp();
 $thirty_days_off=$currentTimeStamp+(30*24*3600);
 $dt->setTimeStamp($thirty_days_off);

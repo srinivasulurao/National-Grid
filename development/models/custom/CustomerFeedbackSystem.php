@@ -13,7 +13,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 {
     function __construct()
     {
-
+       
         $this->IncidentSecurity();
         parent::__construct();
     }
@@ -424,9 +424,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->product_sample_returned_to=$formData['Incident.CustomFields.c.product_sample_returned_to']->value;
             if($formData['Incident.CustomFields.c.request_type']->value)
                 $incident->CustomFields->c->request_type=intval($formData['Incident.CustomFields.c.request_type']->value);
-            if($formData['Incident.CustomFields.c.draft'])
+            if($formData['Incident.CustomFields.c.draft']->value)
                 $incident->CustomFields->c->draft=intval($formData['Incident.CustomFields.c.draft']->value);
-            if($formData['Incident.CustomFields.c.draft'])
+            if($formData['Incident.CustomFields.c.draft']->value)
                 $incident->StatusWithType->Status=($formData['Incident.CustomFields.c.draft']->value)?108:0; //Save as a draft option
             if($formData['c$target_date'])
                 $incident->CustomFields->c->target_date=strtotime($formData['c$target_date']->value);
@@ -464,7 +464,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 }
             }
 
-            $incident->save(RNCPHP\RNObject::SuppressAll);
+            $incident->save();
             RNCPHP\ConnectAPI::commit();
 
             if($formData['Incident.CustomFields.c.delivery_line_items']->value)
@@ -1296,6 +1296,18 @@ public function setInvestigationClosureModel($data,$i_id){
 
         return json_encode($arr);
 
+}
+
+function getStatusIdByStatusName($searchtext){
+	$incidents = RNCPHP\Incident::find("StatusWithType.Status.Name = '$searchtext'" );
+		foreach ($incidents as $incident)
+		{
+			
+		return $incident->StatusWithType->Status->ID;
+		    
+		}
+		
+		return 0;
 }
 
 

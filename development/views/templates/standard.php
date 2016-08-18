@@ -42,7 +42,7 @@
           <rn:widget path="navigation/NavigationTab" label_tab="Supplier Feedback" link="/app/supplier_feedback/list" pages="Supplier, ask_confirm"/>
         </li>
         <li>
-          <rn:widget path="navigation/NavigationTab" label_tab="Investigations" link="/app/customer_feedback/investigations/list" pages="Investigation"/>
+          <rn:widget path="navigation/NavigationTab" label_tab="Investigations" link="/app/investigations/list" pages="Investigation"/>
         </li>
         <li>
           <rn:widget path="navigation/NavigationTab" label_tab="Action Items" link="/app/action_items/list/" pages="Action item, ask_confirm"/>

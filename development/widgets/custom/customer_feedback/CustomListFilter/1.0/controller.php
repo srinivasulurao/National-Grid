@@ -28,7 +28,7 @@ class CustomListFilter extends \RightNow\Libraries\Widget\Base {
 		if($this->data['attrs']['page_entity']=="customer_feedback")
 		$this->data['headers']=array('Reference #'=>'2_1',"Subject"=>"3_2","Contact Name"=>"4_3","Customer Name"=>"5_4","Product"=>"6_5","Target Date"=>"7_6","Status"=>"8_7");
         if($this->data['attrs']['page_entity']=="supplier_feedback")
-		$this->data['headers']=array('Reference #'=>'1_0',"Subject"=>"2_1","Contact Name"=>"3_2","Supplier Name"=>"4_3","PO Number"=>"6_5","Target Date"=>"5_4","Status"=>"7_6");
+		$this->data['headers']=array('Reference #'=>'1_0',"Subject"=>"2_1","Contact Name"=>"3_2","Supplier Name"=>"4_3","PO Number"=>"6_5","Target Date"=>"5_4","Status"=>"6_5");
 		if($this->data['attrs']['page_entity']=="investigations")
 		$this->data['headers']=array('Reference #'=>'3_2',"Subject"=>"4_3","Customer Name"=>"5_4","Category"=>"6_5","Status"=>"7_6");
         return parent::getData();
