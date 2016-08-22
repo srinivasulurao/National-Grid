@@ -204,8 +204,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
       contentBox: "#cacd",
       width:'340px',
       showPrevMonth: false,
-      showNextMonth: true,
-      minimumDate: new Date(1,1,2016)     
+      showNextMonth: true 
      }).render();
      
      var dtdate = G.DataType.Date;
@@ -227,8 +226,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
       contentBox: "#cadd",
       width:'340px',
       showPrevMonth: false,
-      showNextMonth: true,
-      minimumDate: new Date(1,1,2016)     
+      showNextMonth: true    
      }).render();
      
      

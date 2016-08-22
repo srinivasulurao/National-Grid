@@ -33,10 +33,10 @@
 		<option value='1'>Yes</option>
 	</select>
     <label>Completion Date</label>
-    <input type='text' id='corrective_actions_completion_date' style="display: inline-block;width: 97%;margin-right: 7px;" placeholder="mm-dd-yyy"><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar1" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">
+    <input type='text' id='corrective_actions_completion_date' style="display: inline-block;width: 97%;margin-right: 7px;" ><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar1" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">
     <div id="cacd" style='z-index:501;width:250px !important;display: none;position:absolute;'></div>
     <label>Due Date</label>
-    <input type='text' id='corrective_actions_due_date' style="display: inline-block;width: 97%;margin-right: 7px;" placeholder="mm-dd-yyy"><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar2" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">		
+    <input type='text' id='corrective_actions_due_date' style="display: inline-block;width: 97%;margin-right: 7px;" ><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar2" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">		
     <div id="cadd" style='z-index:501;width:250px !important;display: none;position:absolute;'></div>
 	</select>
 	<button id='submitCorrectiveAction' type="submit">Submit</button>
