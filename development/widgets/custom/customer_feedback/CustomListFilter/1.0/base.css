@@ -17,6 +17,8 @@
         height: 42px;
 	}
 	
+	
+	
 	.chunk select{
 		width:100% !important;
 	}
@@ -36,3 +38,48 @@
     width:75px !important;
 	}
 	
+#chun1{
+		width:53% !important;
+	}
+	
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    #chun1, #searchText{
+    	width:100% !important;
+    	display:block;
+    }
+    
+   #chun2,#chun3{
+   	width:48% !important;
+   	display:inline-block !important;
+   	
+   }
+    
+    .chunk select, .chunk #searchText{
+    	padding: 5px !important;
+        height: 25px;
+        font-size: 11px;
+        margin-bottom:0px !important;
+    }
+    
+    .chunk label{
+    	font-size:11px;
+    	margin:0px !important;
+    }
+    
+    .chunk button{
+    	    display: inline-block !important;
+    width: 100px !important;
+    padding: 10px !important;
+    height: 30px;
+    margin-top: 10px;
+    	
+    }
+    
+    #chun4{
+    	width:100% !important;
+    }
+    
+    
+}

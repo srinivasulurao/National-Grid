@@ -1,5 +1,12 @@
 <rn:meta title="#rn:msg:QUESTION_SUBMITTED_LBL#" template="standard.php" clickstream="incident_confirm"/>
 
+<style>
+#customerFeedbackSurvey {
+    height: 350px;
+    width: 100%;
+}
+</style>
+
 <div class="rn_Hero">
     <div class="rn_Container">
         <h1>#rn:msg:YOUR_QUESTION_HAS_BEEN_SUBMITTED_LBL#</h1>
@@ -19,6 +26,9 @@
     </p>
     <p>
         #rn:msg:SUPPORT_TEAM_SOON_MSG#
+    </p>
+    <p>
+        <iframe id="customerFeedbackSurvey" src="//cpchem.custhelp.com/ci/documents/detail/1/AvMG~wrxDv8S7xb~Gv8e~yJVJv8q_6L7FGA8IT7~Pv~1/5/8/12/45ca9f62c58ab15b9fe123a36b3a420c68eccd66/13/MTQ2NDM4Mzg5MA!!/15/NA!!/6/1/7/#rn:url_param_value:i_id#"></iframe>
     </p>
     <!--<rn:condition logged_in="f">
     <p>

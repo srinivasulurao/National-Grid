@@ -45,7 +45,7 @@ class CBOTextInput extends \RightNow\Libraries\Widget\Input {
 		$this->data['constraints'] = array();
 		$this->data['js']['constraints'] = $this->data['constraints'];	
 		
-		 if($this->data['attrs']['textarea'])
+		 if(!$this->data['attrs']['textarea'])
 		 {
 		 $displayType = $this->data['displayType'] = 'Textarea';
 		 }else

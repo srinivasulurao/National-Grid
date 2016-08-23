@@ -655,10 +655,10 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         $ci=get_instance();
         $user=$ci->session->getProfile();
         $org_id=$user->org_id->value;
-        $org_id=1;
+        //$org_id=1;
 
         if(($delivery_no or $customer_po_no or $ship_to_customer or $sold_to_customer) && $org_id):
-            $sql="SELECT * from CFS.Delivery WHERE CFS.Delivery.Plant='$org_id' AND (";
+            $sql="SELECT * from CFS.Delivery WHERE CFS.Delivery.Organization='$org_id' AND (";
             if($delivery_no)
                 $sql.=" OR CFS.Delivery.Delivery LIKE '%$delivery_no%' ";
             if($customer_po_no)
@@ -686,6 +686,10 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
     function deliveryLineItemListModel($delivery_id,$incident_id){
 
+        $ci=get_instance();
+        $user=$ci->session->getProfile();
+        $org_id=$user->org_id->value;
+	
         $product_selected=array();
         if($incident_id):
             $dli_sql="SELECT * from CFS.IncidentDeliveryItem WHERE CFS.IncidentDeliveryItem.Incident='$incident_id'";
@@ -696,7 +700,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         endif;
 
         if($delivery_id):
-            $sql="select * from CFS.Delivery WHERE CFS.Delivery.Delivery='$delivery_id'";
+            $sql="select * from CFS.Delivery WHERE CFS.Delivery.Delivery='$delivery_id' AND CFS.Delivery.Organization='{$org_id}'";
             $sql_instance = RNCPHP\ROQL::query($sql)->next();
             $data="";
             while($delivery = $sql_instance->next())
@@ -1201,13 +1205,16 @@ public function SaveThreadSendMailModel($data,$i_id){
 			//Also the send a mail to the client.
 			$client_mail=$formData['Contact.Emails.PRIMARY.Address']->value;
 			if($client_mail){
-				$email_base64=str_replace("=","",base64_encode($client_mail));
+				$FNTConfig = RNCPHP\FNT\Config::fetch(1);
+				$p_exp=time()+($FNTConfig->LinkExpirationHours*3600);
+				$p_created=time();
+				$p_tok=str_replace("=","",base64_encode($FNTConfig->SecurityString));
 				$html_body=<<<xyz
 				<div style='font-family:lucida sans unicode;line-height:30px'>
 				<b>Hello User,</b><br>
 				We need your inputs to take further action for the complaint No {$incident->LookupName}. <br>
 				Please click on the link given below to complete the procedure.<br>
-				<a href='https://cpchem.custhelp.com/app/fnt/update/$email_base64/i_id/{$incident->ID}'>Click To Respond</a>
+				<a href='https://cpchem.custhelp.com/cgi-bin/cpchem.cfg/php/custom/oracle/fnt/fnt_incident_update.php?p_i_id={$incident->ID}&p_exp={$p_exp}&p_tok={$p_tok}&p_created={$p_created}'>Click To Respond</a>
 				<br><br>
 				Thanks a lot<br>
 				Chevron Team<br>
@@ -1245,13 +1252,16 @@ xyz;
 
 public function contactLookUpSearchModel($input){
 	if($input){
-		echo "<div class='deliverableLists'><ul>";
+		$html="";
 		$search=RNCPHP\ROQL::queryObject("SELECT Contact FROM Contact WHERE Contact.Emails.Address LIKE '%$input%' OR Contact.Login LIKE '%$input%' GROUP BY Contact.ID LIMIT 10")->next();
+		$count=0;
 		while($c=$search->next()){
 				
-			echo "<li onclick=\"setContact('{$c->ID}','{$c->Emails[0]->Address}')\">{$c->Emails[0]->Address}</li>";
+			$html.="<li onclick=\"setContact('{$c->ID}','{$c->Emails[0]->Address}')\">{$c->Emails[0]->Address}</li>";
+			$count++;
 		}
-		echo "</ul></div>";
+		echo ($count)?"<div class='deliverableLists'><ul>".$html."</ul></div>":"<div style='display:none'></div>";
+		$html.="";
 	}
 	else{
 		echo "";

@@ -33,10 +33,12 @@ font-weight:bold;
                 <rn:widget path="custom/customer_feedback/DeliveryDetailsGrid">
                 <rn:widget path="input/TextInput"  name="Incident.c$sold_to_customer_name" default_value="" label_input="Sold to Customer Name" required="true" />
                 <span id='sold_to_customer_suggestions'></span>
-                <rn:widget path="input/TextInput"  name="Incident.c$ship_to_customer_name" default_value="" label_input="Ship to Customer Name" required="true" />
+<!--                 <rn:widget path="input/TextInput"  name="Incident.c$ship_to_customer_name" default_value="" label_input="Ship to Customer Name" required="true" /> -->
                 <span id='ship_to_customer_suggestions'></span>
-                <rn:widget path="input/TextInput"  name="Incident.c$product_no" default_value="" label_input="Product Number" required="true" />
-                <span id='product_number_suggestions'></span>                <rn:widget path="input/ProductCategoryInput" label_input='Product Line' name="Incident.Category" default_value="" required="true" />
+<!--                 <rn:widget path="input/TextInput"  name="Incident.c$product_no" default_value="" label_input="Product Number" required="true" /> -->
+                <span id='product_number_suggestions'></span>
+        	    <rn:widget path="custom/input/ProductCategoryInput" name="Incident.Product" label_input="Product Line" default_value="" required="true" only_display="" />
+         	    <span class='prod_cat_sel'><rn:widget path="input/ProductCategoryInput"  name="Incident.Category" default_value="" required="true" /></span>
                 <rn:widget path="custom/customer_feedback/DeliveryProductSelection" required="true">
                 <span id='product_related_fields' style='display:none'>
                 <rn:widget path="input/SelectionInput"  name="Incident.c$product_returned" default_value=""   />

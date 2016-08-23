@@ -1,0 +1,38 @@
+/**
+ * base.css: Base CSS for CustomListFilter
+ */
+.rn_CustomListFilter {
+
+}
+
+.chunk{
+	display:inline-block !important;
+	width:15% !important;
+	vertical-align:middle;
+	}
+	
+	#searchText{
+		bottom: 6px;
+        position: relative;
+        height: 42px;
+	}
+	
+	.chunk select{
+		width:100% !important;
+	}
+	
+	.rn_SearchInput{
+	padding: 15px;
+    border-radius: 4px;
+    background: #40526B;
+    color: white;
+    margin-bottom: 15px;
+	}
+	
+	.chunk button{
+	height: 42px;
+    top: 3px;
+    position: relative;
+    width:75px !important;
+	}
+	

@@ -14,8 +14,10 @@ Custom.Widgets.action_items.CBOPaginator = RightNow.SearchFilter.extend({
             }
             this._instanceElement = this.Y.one(this.baseSelector);
             this._cloneForwardAndBackwardButton();
-
+            
+            if(document.getElementsByClassName('rn_NextPage').length)
             this.Y.one(this.baseSelector).delegate("click", this._onDirection, ".rn_NextPage", this, true);
+            if(document.getElementsByClassName('rn_PreviousPage').length)
             this.Y.one(this.baseSelector).delegate("click", this._onDirection, ".rn_PreviousPage", this, false);
 
             this._eo = new RightNow.Event.EventObject(this, {
@@ -224,7 +226,9 @@ Custom.Widgets.action_items.CBOPaginator = RightNow.SearchFilter.extend({
      * Clones the current prev and next nodes to current instance variable
      */
     _cloneForwardAndBackwardButton: function() {
+    	if(document.getElementsByClassName('rn_NextPage').length)
         this._forwardButton = this.Y.one(this.baseSelector + " .rn_NextPage").cloneNode(true);
+        if(document.getElementsByClassName('rn_PreviousPage').length)
         this._backButton = this.Y.one(this.baseSelector + " .rn_PreviousPage").cloneNode(true);
     }
 });

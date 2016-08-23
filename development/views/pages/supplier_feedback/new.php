@@ -18,7 +18,7 @@
 <div class="rn_PageContent rn_AskQuestion rn_Container">
     <form id="rn_QuestionSubmit" method="post" action="/cc/CustomerFeedbackSystem/SuppliersendForm">
         <div id="rn_ErrorLocation"></div>
-	<rn:widget path="input/SelectionInput"  name="Incident.c$request_type" label_input="Request Type" required="true" /> 
+	<rn:widget path="input/SelectionInput"  name="Incident.c$request_type" label_input="Request Type" default_value="1" required="true" /> 
 	<div class="rn_Hidden">
             <rn:widget path="input/SelectionInput"  name="Incident.c$complaint_type" default_value="6" /> 
 	</div>
