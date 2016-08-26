@@ -13,7 +13,6 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 {
     function __construct()
     {
-       
         $this->IncidentSecurity();
         parent::__construct();
     }
@@ -28,6 +27,8 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
     public function IncidentSecurity(){
         $i_id=getUrlParm('i_id');
         if($i_id){
+        	
+			
             $incident = RNCPHP\Incident::fetch($i_id);
             $incident_c_id=$incident->PrimaryContact->ID;
 
@@ -50,7 +51,12 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             $c++;
         }
         RNCPHP\ConnectAPI::commit();
-        */
+        
+        
+        $contact = RNCPHP\Contact::fetch(52);
+		$contact->Name->First="Srini'vasulu";
+		$contact->save();
+		*/
     }
 
     function getBusinessObjectField($package,$table,$field)
@@ -414,6 +420,8 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             $incident->PrimaryContact = RNCPHP\Contact::fetch($cid);
             if($formData['Incident.CustomFields.c.complaint_type']->value)
                 $incident->CustomFields->c->complaint_type=intval($formData['Incident.CustomFields.c.complaint_type']->value);
+			if($formData['Incident.Product']->value)
+                $incident->Product=intval($formData['Incident.Product']->value);
             if($formData['Incident.Category']->value)
                 $incident->Category=intval($formData['Incident.Category']->value);
             if($formData['Incident.CustomFields.c.product_returned']->value)
@@ -539,6 +547,8 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             $incident->PrimaryContact = RNCPHP\Contact::fetch($cid);
             if($formData['Incident.CustomFields.c.complaint_type']->value)
                 $incident->CustomFields->c->complaint_type=intval($formData['Incident.CustomFields.c.complaint_type']->value);
+			if($formData['Incident.Product']->value)
+                $incident->Product=intval($formData['Incident.Product']->value);
             if($formData['Incident.Category']->value)
                 $incident->Category=intval($formData['Incident.Category']->value);
             if(1)
@@ -706,11 +716,12 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             while($delivery = $sql_instance->next())
             {
                 $checked=(in_array($delivery['ID'],$product_selected))?"checked='checked'":"class='non_checked incident_delivery_item'";
-                $data.="<span $checked><input type='checkbox' $checked class='incident_delivery_item'  value='{$delivery['ID']}'>{$delivery['DeliveryLineItem']} (".$delivery['Delivery'].")</span><br>";
+				$line_item_text="<tr><td><span $checked><input type='checkbox' $checked class='incident_delivery_item'  value='{$delivery['ID']}'></span></td><td>{$delivery['DeliveryLineItem']}</td><td>{$delivery['Delivery']}</td><td>{$delivery['Material']}</td><td>{$delivery['MaterialDescription']}</td><td>{$delivery['Batch']}</td><td>{$delivery['NetWeight']}</td></tr>";
+                $data.=$line_item_text;
             }
         endif;
         if($data)
-            $data="<div class='delivery_line_item_list_products'><label style='display:block !important'>Products (Having Issue)</label>".$data."</div>";
+            $data="<div class='delivery_line_item_list_products'><label style='display:block !important'>Products (Having Issue)</label><table style='width:500px;border:1px solid black;font-size:10px'><tr style='background:black;color:white'><th>&nbsp &#x2611;</td><th>Item</th><th>Delivery</th><th>Material</th><th>Material Desc</th><th>Batch</th><th>Net Weight</th></tr>".$data."</table></div>";
         echo $data;
 
     }
@@ -961,7 +972,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         {
             // $data[] =$contactdata['LookupName']."-".$contactdata['ID'];
             ?>
-            <li onclick='fill("<?php echo $contactdata['ID']."-".$contactdata['LookupName']; ?>")'><?php echo $contactdata['LookupName']; ?></li>
+            <li onclick='fill("<?php echo $contactdata['ID']."-".str_replace("'","&#39;",$contactdata['LookupName']); ?>")'><?php echo $contactdata['LookupName']; ?></li>
             <?php
 
         }
@@ -1086,8 +1097,15 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
 //Investigation Page Widgets.
 
+   public function getParentIncidentId($i_id){
+   	$incident=RNCPHP\Incident::fetch($i_id);
+	return $incident->CustomFields->CFS->Incident->ID;
+	//return 222;
+   }
+   
    public function investigationDetails($i_id){
-   	$incident = RNCPHP\Incident::fetch($i_id);
+   	//We have to give the details of the parent incident, as
+	$incident=RNCPHP\Incident::fetch($i_id);
 	return $incident;
    }
    
@@ -1183,6 +1201,7 @@ public function addCorrectiveActionModel(){
 	
 }
 
+
 public function SaveThreadSendMailModel($data,$i_id){
 	    
 	    $arr=array();
@@ -1202,22 +1221,27 @@ public function SaveThreadSendMailModel($data,$i_id){
                 $incident->Threads[0]->Text =$formData['Incident.Threads']->value;
             }
 			
+			$incident->save(RNCPHP\RNObject::SuppressAll);
+            RNCPHP\ConnectAPI::commit();
+			
 			//Also the send a mail to the client.
 			$client_mail=$formData['Contact.Emails.PRIMARY.Address']->value;
 			if($client_mail){
 				$FNTConfig = RNCPHP\FNT\Config::fetch(1);
 				$p_exp=time()+($FNTConfig->LinkExpirationHours*3600);
-				$p_created=time();
+				$p_created=str_replace("=","",base64_encode($client_mail));
 				$p_tok=str_replace("=","",base64_encode($FNTConfig->SecurityString));
+				$p_ques=base64_encode($formData['Incident.Threads']->value);
+				$p_asked_by=base64_encode($profile->first_name->value." ".$profile->last_name->value);
 				$html_body=<<<xyz
 				<div style='font-family:lucida sans unicode;line-height:30px'>
 				<b>Hello User,</b><br>
-				We need your inputs to take further action for the complaint No {$incident->LookupName}. <br>
-				Please click on the link given below to complete the procedure.<br>
-				<a href='https://cpchem.custhelp.com/cgi-bin/cpchem.cfg/php/custom/oracle/fnt/fnt_incident_update.php?p_i_id={$incident->ID}&p_exp={$p_exp}&p_tok={$p_tok}&p_created={$p_created}'>Click To Respond</a>
+				Your input is required to take further action for a customer feedback complaint (Ref-No: {$incident->LookupName}). <br>
+				Please click the link below to provide your response.<br>
+				<a href='https://cpchem.custhelp.com/cgi-bin/cpchem.cfg/php/custom/oracle/fnt/fnt_incident_update.php?p_i_id={$incident->ID}&p_exp={$p_exp}&p_tok={$p_tok}&p_created={$p_created}&p_ques={$p_ques}&p_asked_by={$p_asked_by}'>Click To Respond</a>
 				<br><br>
 				Thanks a lot<br>
-				Chevron Team<br>
+				CPChem Team<br>
 				<img src='https://cpchem.custhelp.com/euf/assets/themes/standard/images/CPChem_logo.png' style='width:100px'>
 				</div>
 xyz;
@@ -1234,8 +1258,7 @@ xyz;
 				    $mm->send();
 			}
 
-            $incident->save(RNCPHP\RNObject::SuppressAll);
-            RNCPHP\ConnectAPI::commit();
+            
 
 
             $arr['result']['transaction']['incident']['key']="i_id";
@@ -1313,7 +1336,7 @@ public function setInvestigationClosureModel($data,$i_id){
 }
 
 function getStatusIdByStatusName($searchtext){
-	$incidents = RNCPHP\Incident::find("StatusWithType.Status.Name = '$searchtext'" );
+	$incidents = RNCPHP\Incident::find("StatusWithType.Status.Name LIKE '%$searchtext%'" );
 		foreach ($incidents as $incident)
 		{
 			

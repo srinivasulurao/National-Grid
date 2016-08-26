@@ -3,6 +3,7 @@ namespace Custom\Widgets\investigations;
 
 class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 	public $ci_instance;
+	
     function __construct($attrs) {
     	$this->ci_instance=&get_instance();
         parent::__construct($attrs);
@@ -18,8 +19,10 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
     }
 	
 	function getIncidentDetails(){
-		$i_id=getUrlParm('i_id');
-		$incident=$this->ci_instance->model('custom/CustomerFeedbackSystem')->investigationDetails($i_id);
+		//Show the Details of the parent incident.
+		$i_id=getUrlParm('i_id'); 
+		$parent_id=$this->ci_instance->model('custom/CustomerFeedbackSystem')->getParentIncidentId($i_id);
+		$incident=$this->ci_instance->model('custom/CustomerFeedbackSystem')->investigationDetails($parent_id);
 		//$this->d($incident->PrimaryContact->Phones);
 		$displayParams=array();
 		

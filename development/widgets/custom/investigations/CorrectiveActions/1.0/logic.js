@@ -12,44 +12,22 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
           	
           	//Show, Hide Form
           	var add_tca = Y.one('#add_tca');
-            add_tca.on("click", function (e) {
-            	add_button_text=document.getElementById('add_tca').innerHTML;
+          
+            add_tca.on("click", function (e) {   
+            	Y.one('#add_corrective_action').toggleView();      	
+            	add_button_text=document.getElementById('add_tca').innerText;
             	if(add_button_text=="+ Add"){
-            	Y.one('#add_corrective_action').show(true);
             	add_tca.setContent("- Hide");
             	}
             	else{
-            	Y.one('#add_corrective_action').hide(true);
             	add_tca.setContent("+ Add");
             	}
             	
+            	 e.preventDefault();
+            	 e.stopPropagation();
             });
             
-            var dialog = new Y.Panel({
-        contentBox : Y.Node.create('<div id="dialog" />'),
-        bodyContent: '<div class="message icon-warn">Corrective Action Added Successfully</div>',
-        width      : 410,
-        zIndex     : 6,
-        centered   : true,
-        modal      : false, // modal behavior
-        render     : '.example',
-        visible    : false, // make visible explicitly with .show()
-        buttons    : {
-            footer: [
-                {
-                    name  : 'cancel',
-                    label : 'Cancel',
-                    action: 'onCancel'
-                },
-
-                {
-                    name     : 'proceed',
-                    label    : 'OK',
-                    action   : 'onOK'
-                }
-            ]
-        }
-    });
+           
     
             //Submit Corrective Action.
             
@@ -78,7 +56,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             	document.getElementById('corrective_actions_completion_date').value="";
             	
             	
-            	Y.one('#add_corrective_action').hide(true);
+            	Y.one('#add_corrective_action').toggleView();
             	add_tca.setContent("+ Add");
             	updateCountStatus();
             	
@@ -100,12 +78,13 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             	}
             	
             	if(j){
-            	
+            	Y.one(".lpw").show(true);
 		            	RightNow.Ajax.makeRequest("/cc/customerFeedbackSystem/deleteCorrectiveActions",{input:total_deletes.join('|')},{
 		                    successHandler: function (response) {
 		
 		                        if(response.responseText!=""){
 		                           document.getElementById('correctiveActionList').innerHTML=response.responseText;
+		                           Y.one(".lpw").hide(true);
 		                           updateCountStatus();
 		                        }
 		                        
@@ -136,11 +115,13 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             	}
             	
             	if(j){
+            		Y.one(".lpw").show(true);
 		            	RightNow.Ajax.makeRequest("/cc/customerFeedbackSystem/changeCorrectiveActionStatus",{input:total_sca.join('|'),status:1},{
 		                    successHandler: function (response) {
 		
 		                        if(response.responseText!=""){
 		                           document.getElementById('correctiveActionList').innerHTML=response.responseText;
+		                           Y.one(".lpw").hide(true);
 		                           updateCountStatus();
 		                        }
 		                        
@@ -171,12 +152,14 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             	}
             	
             	if(j){
+            		Y.one(".lpw").show(true);
 		            	RightNow.Ajax.makeRequest("/cc/customerFeedbackSystem/changeCorrectiveActionStatus",{input:total_sca.join('|'),status:0},{
 		                    successHandler: function (response) {
 		
 		                        if(response.responseText!=""){
 		                           document.getElementById('correctiveActionList').innerHTML=response.responseText;
-		                           updateCountStatus();
+		                           Y.one(".lpw").hide(true);
+		                           updateCountStatus();                  
 		                        }
 		                        
 		                    },
@@ -194,7 +177,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
           }); //Events ends here.
           
           
-          
+          wid_min_date=document.getElementById('wid_min_date').value;
 //Add a calendar
   //Calendar1      
   var yahoo_yui=YUI();
@@ -204,7 +187,8 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
       contentBox: "#cacd",
       width:'340px',
       showPrevMonth: false,
-      showNextMonth: true 
+      showNextMonth: true,
+      minimumDate: new Date(wid_min_date) 
      }).render();
      
      var dtdate = G.DataType.Date;
@@ -218,7 +202,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
     G.all("#corrective_actions_completion_date,#toggleCalendar1").on('click', function (ev) {
       G.one('#cacd').toggleView();
       ev.preventDefault();
-      calendar.set('showPrevMonth', !(calendar.get("showPrevMonth")));
+      //calendar.set('showPrevMonth', !(calendar.get("showPrevMonth")));
     });
     
     //Calendar 2
@@ -226,7 +210,8 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
       contentBox: "#cadd",
       width:'340px',
       showPrevMonth: false,
-      showNextMonth: true    
+      showNextMonth: true,
+      minimumDate: new Date(wid_min_date)    
      }).render();
      
      

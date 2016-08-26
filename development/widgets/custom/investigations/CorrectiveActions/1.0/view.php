@@ -1,4 +1,5 @@
 <div id="rn_<?= $this->instanceID ?>" class="<?= $this->classList ?> inv-div">
+	<span class='lpw' style='float: left;opacity: 1;display:none;font-size: 12px;top: 10px;position: relative;'>Loading...</span>
 	<a href='javascript:void(0)' class='btn success_button' id='complete_corrective_actions' style='float:right;margin:5px;margin-left:0'>Complete</a>
 	<a href='javascript:void(0)' class='btn primary_button' id='incomplete_corrective_actions' style='float:right;margin:5px;margin-left:0'>Not Complete</a>
 	<a href='javascript:void(0)' class='btn danger_button'  id='delete_corrective_actions' style='float:right;margin:5px;margin-left:0'>Delete</a>
@@ -6,6 +7,9 @@
     <table style='width:100%' class='actiontable'>
 	<tr><th><input type='checkbox' id='centralCheck' onclick="centralCheck()"></th><th>Description</th><th>Created</th><th>Due Date</th><th>Completed</th></tr>
 	<?php
+    $thirty_days_extra=time()+(30*24*3600);
+	$default_date=date("Y-m-d",$thirty_days_extra);
+	$minimum_date=date("Y,m,d",$thirty_days_extra);
 	$counter=0;
 	foreach($this->data['corrective_actions'] as $ca):
 		$checkbox="<input type='checkbox' id='{$ca['ID']}' class='corrective_action_checkbox'>";
@@ -33,13 +37,14 @@
 		<option value='1'>Yes</option>
 	</select>
     <label>Completion Date</label>
-    <input type='text' id='corrective_actions_completion_date' style="display: inline-block;width: 97%;margin-right: 7px;" ><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar1" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">
+    <input type='text' id='corrective_actions_completion_date' value='<?php echo $default_date; ?>' style="display: inline-block;width: 97%;margin-right: 7px;" ><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar1" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">
     <div id="cacd" style='z-index:501;width:250px !important;display: none;position:absolute;'></div>
     <label>Due Date</label>
-    <input type='text' id='corrective_actions_due_date' style="display: inline-block;width: 97%;margin-right: 7px;" ><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar2" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">		
+    <input type='text' id='corrective_actions_due_date' value='<?php echo $default_date; ?>' style="display: inline-block;width: 97%;margin-right: 7px;" ><img style="height:20px;width:20px;top:5px;position: relative;cursor:pointer" id="toggleCalendar2" src="/euf/assets/images/icons/calendar_icon1.png" srckk="http://eguidemagazine.com/wp-content/uploads/2016/06/calendar-icon-blue_sm.png">		
     <div id="cadd" style='z-index:501;width:250px !important;display: none;position:absolute;'></div>
 	</select>
 	<button id='submitCorrectiveAction' type="submit">Submit</button>
 	<input type='hidden' value='<?php echo getUrlParm('i_id'); ?>' id='corrective_actions_iid' />
+	<input type='hidden' value="<?php echo $minimum_date; ?>" id='wid_min_date' >
 </form>
 </div>

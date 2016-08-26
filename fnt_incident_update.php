@@ -23,7 +23,6 @@ $ConnectPass = "FNTRocks!";
 $ip_dbreq = true;
 require_once('include/init.phph');
 
-
 //initialize CPHP and get configuration related information
 require_once( get_cfg_var("doc_root")."/ConnectPHP/Connect_init.php" );
 use RightNow\Connect\v1_2 as RNCPHP; //use CCOM 1_2 for 12.2 and greater
@@ -229,11 +228,11 @@ if($p_response and !$p_fattach) //if they submitted then add the note
     	$incident->Threads[0] = new RNCPHP\Thread();
     	$incident->Threads[0]->EntryType = new RNCPHP\NamedIDOptList();
     	$incident->Threads[0]->EntryType->ID = 1; //add the thread as a private note
-    	$incident->Threads[0]->Text = $p_response . "\n\n* This entry was added by a SME via forward and track".$extraText; //$p_response is a $_POST variable
-
-		$incident->StatusWithType->Status->ID = $FNTConfig->statusid_responded;
-
-		$incident->save(RNCPHP\RNObject::SuppressAll);
+        $third_party_email=base64_decode($_GET['p_created']);
+        $question_asked="<label style='color:red;display:inline-block'>".base64_decode($_GET['p_asked_by'])." : </label>".base64_decode($_GET['p_ques'])."<br>";
+    	$incident->Threads[0]->Text =$question_asked."<label style='color:green;display:inline-block'>FNT User : </label>".$p_response . "<br>* This entry was added by [{$third_party_email}] via forward and track".$extraText; //$p_response is a $_POST variable
+        $incident->StatusWithType->Status->ID = $FNTConfig->statusid_responded;
+        $incident->save(RNCPHP\RNObject::SuppressAll);
 
     	print("Thank you for submitting your response. You input has been added to this incident. You may close this window.");
 	}
@@ -256,7 +255,6 @@ $p_refno = $incident->ReferenceNumber;
 <!-- Head ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>- -->
 <head>
 <title>Update Incident</title>
-
 <script>
 
 function _do_submit(form)
@@ -272,6 +270,7 @@ function _do_submit(form)
 }
 
 </script>
+
 <style>
 
 div.banner {
@@ -305,7 +304,8 @@ body{
     border: 1px solid lightgrey;
     padding: 20px;
     background: white;
-    font-family: serif;
+    font-size:14px !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 html{
 background:#40526B;
@@ -331,16 +331,16 @@ background:#40526B;
 
                             <img src="/euf/assets/themes/standard/images/CPChem_logo.png"
                                 alt="Logo Media-Saturn" /></a>
-								FNT Response
+								CFS Third Party Response
 					</div>
 </div>
 <?
-  $querystring="p_tok=$p_tok&p_i_id=$p_i_id&p_exp=$p_exp&p_created=$p_created";
+  $querystring="p_tok=$p_tok&p_i_id=$p_i_id&p_exp=$p_exp&p_created=$p_created&p_ques={$_GET['p_ques']}&p_asked_by={$_GET['p_asked_by']}";
 ?>
 <form
 	name="_main"
 	method="post"
-	action="?<?=$querystring?>#message"
+	action="?<?=$querystring?>/#message"
 	enctype="multipart/form-data"
 
 	<input type="hidden" name="p_add_fattach" value="" />
@@ -387,8 +387,10 @@ Threads
 
 <div width="99%" style="border: 1px solid gray; padding: 5px;">
 <?
+
     foreach($incident->Threads as $thread)
     {
+if($thread->Text == base64_decode($_GET['p_ques']) || substr_count($thread->Text,"[".base64_decode($_GET['p_created']."]"))): //Client Question & User Answer only is allowerd.
 		$entered_by = $thread->Account->LookupName;
 		//printf("<pre>entry type: %s [%s]</pre>", $thread->EntryType->ID, $thread->EntryType->LookupName);
 
@@ -427,7 +429,7 @@ Threads
 
 		printf("<div style=\"font-size:16px;background:%s;margin-top:5px;margin-bottom:5px;\">%s - %s<span style=\"float:right\">%s,  %s</span></div>", $bgcolor, $thread->EntryType->LookupName, $thread->Channel->LookupName, $entered_by, date("m/d/Y h:i:s A", $thread->CreatedTime));
 		printf("<div class=\"thrtext\">%s</div>", str_replace("\n", "<br />", $thread->Text));
-	
+endif;	
     } //end foreach
 ?>
 
@@ -531,7 +533,7 @@ Add Comments
 
 <div>
 <a name='message'></a>Your Message
-    <textarea name="p_response" id="p_response" style="width: 100%" rows="8" wrap><?=$p_response?></textarea>
+    <textarea name="p_response" id="p_response" style="width: 100%;font-family: arial; font-size: 14px; border: 1px solid grey; padding: 5px;" rows="8" wrap><?=$p_response?></textarea>
 </div>
 
 <!-- Submit ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>- -->

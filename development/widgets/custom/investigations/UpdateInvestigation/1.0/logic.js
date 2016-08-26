@@ -11,13 +11,12 @@ Custom.Widgets.investigations.UpdateInvestigation = RightNow.Widgets.extend({
 			         //Show, Hide Form
 			          	var add_thread = Y.one('#add_thread');
 			            add_thread.on("click", function (e) {
-			            	add_button_text=document.getElementById('add_thread').innerHTML;
-			            	if(add_button_text=="+ Add"){
-			            	Y.one('#thread_submit').show(true);
+			            	Y.one('#thread_submit').toggleView();
+			            	add_button_text=document.getElementById('add_thread').innerText;
+			            	if(add_button_text=="+ Add"){			            	
 			            	add_thread.setContent("- Hide");
 			            	}
-			            	else{
-			            	Y.one('#thread_submit').hide(true);
+			            	else{			            	
 			            	add_thread.setContent("+ Add");
 			            	}
 			            	
@@ -44,9 +43,18 @@ Custom.Widgets.investigations.UpdateInvestigation = RightNow.Widgets.extend({
 			                    });
 			                   }
 			      }); 
+			      
+			      
+			      //Hide the contact Lookup.			
+			      var cl = Y.all('.rn_FormSubmit');
+			      cl.on("hover", function (e) {   
+			      	            Y.one("#contact_look_up").setContent("");
+			      }); 
+			      
 			            
 			});      
 			
+					
 			//Subscribe to response Event()
 			var form = RightNow.Form.find("thread_submit", this.instanceID);
 	        form.on("response", this.callThreads, this);      
