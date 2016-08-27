@@ -14,6 +14,7 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
        $this->data['incident_details']=$this->getIncidentDetails();
 	   $this->data['customer_details']=$this->getCustomerDetails();
 	   $this->data['delivery_details']=$this->getDeliveryDetails();
+	   $this->data['investigation_details']=$this->getInvestigationDetails();
         return parent::getData();
 
     }
@@ -38,6 +39,24 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 		
 		return $displayParams;
 	}
+
+    function getInvestigationDetails(){
+    	$displayParams=array();
+		$i_id=getUrlParm('i_id'); 
+		
+		$incident=$this->ci_instance->model('custom/CustomerFeedbackSystem')->investigationDetails($i_id);
+		$displayParams['Complaint No']=$incident->LookupName;
+		$displayParams['Subject']=$incident->Subject;
+		$displayParams['Status']=$incident->StatusWithType->StatusType->LookupName;
+		$displayParams['Source']=$incident->Source->LookupName;
+		$displayParams['Assigned To']=$incident->AssignedTo->LookupName;
+		$displayParams['Created On']=date("Y-m-d H:i A",$incident->CreatedTime);
+		$displayParams['Severity']=$incident->Severity;
+		$displayParams['Interface']=$incident->Interface->LookupName;
+		
+		
+		return $displayParams;
+    }
 	
 	function getCustomerDetails(){
 		$i_id=getUrlParm('i_id');

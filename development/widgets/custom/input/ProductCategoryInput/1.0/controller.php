@@ -80,8 +80,11 @@ class ProductCategoryInput extends \RightNow\Widgets\ProductCategoryInput {
         else {
             if($isProduct) {
                 $this->CI->model('Prodcat')->setDefaultProductID(end($defaultChain));
+				$this->data['js']['hierData']=$this->FilterByOrgId($this->data['js']['hierData']);
             }
+			
             $defaultHierMap = $this->CI->model('Prodcat')->getFormattedTree($dataType, $defaultChain, false, null, $maxLevel)->result;
+			
         }
         
         if($this->data['attrs']['verify_permissions'] !== 'None') {
@@ -146,6 +149,23 @@ class ProductCategoryInput extends \RightNow\Widgets\ProductCategoryInput {
      * New methods:
      */
      
+    private function FilterByOrgId($hierData){
+    	$ci=&get_instance();
+		$op_link=$ci->model('custom/CustomerFeedbackSystem')->getProdOrgLinking();
+		$profile=$ci->session->getProfile();
+		$org_id=$profile->org_id->value;
+		//echo "<pre>";
+		//print_r($hierData);
+		//echo "</pre>";
+		
+		$newHierData=array();
+		foreach($hierData[0] as $hd):
+			if(in_array($hd['id'],$op_link[$org_id]))
+			$newHierData[0][]=$hd;
+		endforeach;	
+		
+		return $newHierData;
+    } 
 	private function _getFilterList()
 	{
 		$retList = array();

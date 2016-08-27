@@ -1,7 +1,7 @@
 <rn:meta title="Please submit your action item" template="standard.php" clickstream="actionitem_create" login_required="true"/>
 <?PHP
  $productID=$action_id=getUrlParm(pid);
- $action_id=getUrlParm('pid');
+ $action_id=getUrlParm('ID');
 ?>
 <div class="rn_Hero">
     <div class="rn_HeroInner">
@@ -44,6 +44,7 @@
         <rn:widget path="custom/action_items/CBOSelectionInput" name="CFS.ActionItem.Priority" required="true"  label_input="Priority" required="true"/>
         <rn:widget path="custom/action_items/CBOSelectionInput" name="CFS.ActionItem.Status" required="true"  label_input="Status" required="true"/>
         <rn:widget path="custom/action_items/CBOFileAttachmentUpload" name="CFS.ActionItem.Attachments"/> <br>
+        <rn:widget path="custom/action_items/customFileDisplay" />
         <rn:widget path="input/FormSubmit" label_button="Update Your Action Item" on_success_url="/app/action_items/list/" error_location="rn_ErrorLocation"/>
      
     </form>

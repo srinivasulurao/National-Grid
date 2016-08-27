@@ -218,6 +218,10 @@ class CustomerFeedbackSystem extends \RightNow\Controllers\Base
 		$this->model('custom/CustomerFeedbackSystem')->addCorrectiveActionModel();
 	}
 	
+	function editCorrectiveAction(){
+		$this->model('custom/CustomerFeedbackSystem')->editCorrectiveActionModel();
+	}
+	
 	function deleteCorrectiveActions(){
 		$input=$this->input->post('input');
 		$delete_ids=explode("|",$input);
@@ -256,6 +260,12 @@ public function setInvestigationClosure($param,$i_id){
 	$data=json_decode($this->input->post('form'));
 	$response=$this->model('custom/CustomerFeedbackSystem')->setInvestigationClosureModel($data,$i_id);
 	echo $response;
+}
+
+public function getCorrectiveAction(){
+	$input=$this->input->post('input');
+	$data=$this->model("custom/CustomerFeedbackSystem")->getCorrectiveAction_Model($input);
+	echo json_encode($data);
 }
 
 }// Controller Class Ends here !

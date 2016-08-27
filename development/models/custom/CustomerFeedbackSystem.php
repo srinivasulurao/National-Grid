@@ -53,10 +53,14 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         RNCPHP\ConnectAPI::commit();
         
         
-        $contact = RNCPHP\Contact::fetch(52);
-		$contact->Name->First="Srini'vasulu";
+        
+		for($i=1;$i<=100;$i++):
+			$contact = new RNCPHP\CFS\OrgToProduct();
+		$contact->ProductID=$i;
+		$contact->Organization=RNCPHP\Organization::Fetch(2);
 		$contact->save();
-		*/
+		endfor;
+		  * */
     }
 
     function getBusinessObjectField($package,$table,$field)
@@ -802,7 +806,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
     {
 
         $formData = $this->processFields($formData, $presentFields);
-        
+		
         if(!empty($formData))
         {
             try{
@@ -1201,6 +1205,27 @@ public function addCorrectiveActionModel(){
 	
 }
 
+public function editCorrectiveActionModel(){
+	$corrective_action=RNCPHP\CFS\CorrectiveAction::fetch($_GET['edit_id']);
+	
+	if($_GET['complete'])
+	$corrective_action->Complete=$_GET['complete'];
+	if($_GET['completion_date'])
+	$corrective_action->CompletionDate=strtotime($_GET['completion_date']);
+	if($_GET['due_date'])
+	$corrective_action->DueDate=strtotime($_GET['due_date']);
+	if($_GET['description'])
+	$corrective_action->Description=$_GET['description'];
+	if($_GET['detail'])
+	$corrective_action->Details=$_GET['detail'];
+	if($_GET['i_id'])
+	$corrective_action->Incident=RNCPHP\Incident::fetch($_GET['i_id']);
+	
+	$corrective_action->save();
+	
+	$this->getCorrectiveActionsHTML($_GET['i_id']);
+}
+
 
 public function SaveThreadSendMailModel($data,$i_id){
 	    
@@ -1345,6 +1370,39 @@ function getStatusIdByStatusName($searchtext){
 		}
 		
 		return 0;
+}
+
+function getActionItemAttachment($id){
+	
+	$action_item=RNCPHP\CFS\ActionItem::fetch($id);
+	//echo $action_item->FileAttachments[0]->getAdminURL();
+	return $action_item->FileAttachments;  
+	
+}
+
+function getCorrectiveAction_Model($input){
+	$corrective_action=RNCPHP\CFS\CorrectiveAction::fetch($input);
+	$data=array();
+	$data['ID']=$input;
+	$data['Details']=$corrective_action->Details;
+	$data['Description']=$corrective_action->Description;
+	$data['Complete']=$corrective_action->Complete;
+	$data['CompletionDate']=date("Y-m-d",$corrective_action->CompletionDate);
+	$data['DueDate']=date("Y-m-d",$corrective_action->DueDate);
+	
+	return $data;
+}
+
+function getProdOrgLinking(){
+	$data=array();
+	$orgToProd=RNCPHP\ROQL::query("SELECT * FROM CFS.OrgToProduct")->next();
+	
+	while($op=$orgToProd->next()):
+		$data[$op['Organization']][]=$op['ProductID'];
+	endwhile;
+	
+    return $data;			
+	
 }
 
 

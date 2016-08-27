@@ -354,6 +354,11 @@ class ReportCustomModel extends \RightNow\Models\Report
 				$searchArgs['search_field0']=array("name"=>"incidents.c_id","oper"=>1,"val"=>$c_id);
 				$searchArgs['search_field1']=array("name"=>"4","oper"=>7,"val"=>"%$status_id%"); //status.
 			}
+		if($Uri_result[2]=='action_items')
+			{
+				$searchArgs=array();
+				$searchArgs['search_field0']=array("name"=>5,"oper"=>1,"val"=>$c_id);
+			}	
 					
 		#############################################
 		//######Advanced Search Filter###############
@@ -425,11 +430,12 @@ class ReportCustomModel extends \RightNow\Models\Report
 				$status_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName($srch);
 				if(!empty($srch))
 				{
-					$searchArgs['search_field0']=array("name"=>"3","oper"=>1,"val"=>$c_id);					
+									
 					$searchArgs['search_field1']=array("name"=>"1","oper"=>7,"val"=>"%$srch%"); //Description
 					$searchArgs['search_field2']=array("name"=>"2","oper"=>7,"val"=>"%$srch%"); //ID
-					$searchArgs['search_field3']=array("name"=>"4","oper"=>7,"val"=>"%$srch%"); //Category.
-					$searchArgs['search_field4']=array("name"=>"5","oper"=>7,"val"=>"%$srch%"); //Action Group
+					$searchArgs['search_field3']=array("name"=>"3","oper"=>7,"val"=>"%$srch%"); //Category.
+					$searchArgs['search_field4']=array("name"=>"4","oper"=>7,"val"=>"%$srch%"); //Action Group
+					$searchArgs['search_field0']=array("name"=>"5","oper"=>1,"val"=>$c_id);	//Own Contact
 					
 				}
 			}

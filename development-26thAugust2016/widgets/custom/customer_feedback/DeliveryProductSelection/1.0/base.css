@@ -1,0 +1,19 @@
+/**
+ * base.css: Base CSS for DeliveryProductSelection
+ */
+.rn_DeliveryProductSelection {
+
+}
+
+.rn_DeliveryProductSelection textarea, .rn_DeliveryProductSelection label{
+display:none !important;
+}
+
+
+.delivery_line_item_list_products{
+border: 1px solid grey;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 525px !important;
+}

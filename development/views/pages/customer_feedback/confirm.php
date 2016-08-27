@@ -15,6 +15,9 @@
 
 <div class="rn_PageContent rn_AskQuestion rn_Container">
     <p>
+        Please complete the <a id="customerFeedbackSurvey" class="link_button" href="http://cpchem.custhelp.com/ci/documents/detail/1/AvMG~wrpDv8S6Rb~Gv8e~yJFJv8q_aL7FGAcIT7~Pv~V/5/11/12/245cfe1718889dd43ee26d6654e354af8331c668/13/MTQ3MjE0MDAwMQ!!/6/1/7/#rn:url_param_value:i_id#" target="_blank">Risk Rank Survey</a>
+    </p>
+    <p>
         Use this reference number for follow up:
         <b>
             <rn:condition url_parameter_check="i_id == null">
@@ -26,9 +29,6 @@
     </p>
     <p>
         #rn:msg:SUPPORT_TEAM_SOON_MSG#
-    </p>
-    <p>
-        <iframe id="customerFeedbackSurvey" src="/ci/documents/detail/1/AvMG~wrpDv8S6Rb~Gv8e~yJFJv8q_aL7FGAcIT7~Pv~V/5/11/12/245cfe1718889dd43ee26d6654e354af8331c668/13/MTQ3MjE0MDAwMQ!!/6/1/7/#rn:url_param_value:i_id#"></iframe>
     </p>
     <!--<rn:condition logged_in="f">
     <p>

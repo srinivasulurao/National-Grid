@@ -3,6 +3,7 @@
 	<a href='javascript:void(0)' class='btn success_button' id='complete_corrective_actions' style='float:right;margin:5px;margin-left:0'>Complete</a>
 	<a href='javascript:void(0)' class='btn primary_button' id='incomplete_corrective_actions' style='float:right;margin:5px;margin-left:0'>Not Complete</a>
 	<a href='javascript:void(0)' class='btn danger_button'  id='delete_corrective_actions' style='float:right;margin:5px;margin-left:0'>Delete</a>
+	<a href='javascript:void(0)' class='btn info_button'  id='edit_corrective_actions' style='float:right;margin:5px;margin-left:0'>Edit</a>
 <div id='correctiveActionList'>
     <table style='width:100%' class='actiontable'>
 	<tr><th><input type='checkbox' id='centralCheck' onclick="centralCheck()"></th><th>Description</th><th>Created</th><th>Due Date</th><th>Completed</th></tr>
@@ -44,7 +45,9 @@
     <div id="cadd" style='z-index:501;width:250px !important;display: none;position:absolute;'></div>
 	</select>
 	<button id='submitCorrectiveAction' type="submit">Submit</button>
+	<button id="editCorrectiveAction" type="submit" style='display:none'>Edit</button>
 	<input type='hidden' value='<?php echo getUrlParm('i_id'); ?>' id='corrective_actions_iid' />
 	<input type='hidden' value="<?php echo $minimum_date; ?>" id='wid_min_date' >
+	<input type='hidden' id='corrective_actions_edit_id'>
 </form>
 </div>

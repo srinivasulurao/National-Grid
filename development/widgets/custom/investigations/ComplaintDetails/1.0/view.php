@@ -1,12 +1,13 @@
 <div id="rn_<?= $this->instanceID ?>" class="<?= $this->classList ?> inv-div" >
 		<div style='border-bottom:1px solid lightgrey'>
 		<div class='tabs tab-active' id='tab1' onclick="showTabContent(1)">Complaint</div>
+		<div class='tabs' id='tab4' onclick="showTabContent(4)">Investigation</div>
 		<div class='tabs' id='tab2' onclick="showTabContent(2)">Customer</div>
 		<div class='tabs' id='tab3' onclick="showTabContent(3)">Delivery</div>
 		</div>
 
 		<div class='tab_playground'>
-			<div id='investigation_content'  >
+			<div id='complaint_content'  >
 				<table class='actiontable' style='width:70%;margin:auto;margin-top:20px;border:1px solid lightgrey'>
 				<?php foreach ($this->data['incident_details'] as $key => $value) {
 					if($value)
@@ -52,5 +53,20 @@
 			</div>
 			
 		</div>
+		
+		
+		<div id='investigation_content'  >
+				<table class='actiontable' style='width:70%;margin:auto;margin-top:20px;border:1px solid lightgrey'>
+				<?php foreach ($this->data['investigation_details'] as $key => $value) {
+					if($value)
+					echo "<tr><td style='width:50%;padding-left:10px'>$key</td><td>$value</td></tr>";
+				}	
+				?>	
+				</table>
+				<div id='thread_display' style='font-size:12px'>
+	<rn:widget path="output/IncidentThreadDisplay" label='Communication History' name="Incident.Threads" />
+	</div>
+    
+			</div>
 </div>
 

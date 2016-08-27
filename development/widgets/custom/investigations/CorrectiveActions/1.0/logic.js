@@ -62,6 +62,40 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             	
             });
             
+            //Edit Corrective Action
+            
+            eda=Y.one("#editCorrectiveAction");
+            eda.on("click",function (e){
+            	
+            	var detail=document.getElementById('corrective_actions_details').value;
+            	var description=document.getElementById('corrective_actions_description').value;
+            	var complete=document.getElementById('corrective_actions_complete').value;
+            	var due_date=document.getElementById('corrective_actions_due_date').value;
+            	var completion_date=document.getElementById('corrective_actions_completion_date').value;
+            	var i_id=document.getElementById('corrective_actions_iid').value;
+            	var edit_id=document.getElementById('corrective_actions_edit_id').value;
+            	//dialog.show();
+            	
+            	queryString="detail="+detail+"&description="+description+"&complete="+complete+"&due_date="+due_date+"&completion_date="+completion_date+"&i_id="+i_id+"&edit_id="+edit_id;
+            	
+            	var xhttp=new XMLHttpRequest();
+                xhttp.open("GET", "/cc/customerFeedbackSystem/editCorrectiveAction/?"+queryString, false);
+                xhttp.send();
+                document.getElementById('correctiveActionList').innerHTML=xhttp.responseText;
+            	
+            	document.getElementById('corrective_actions_details').value="";
+            	document.getElementById('corrective_actions_description').value="";
+            	document.getElementById('corrective_actions_complete').value="";
+            	document.getElementById('corrective_actions_due_date').value="";
+            	document.getElementById('corrective_actions_completion_date').value="";
+            	
+            	
+            	Y.one('#add_corrective_action').toggleView();
+            	add_tca.setContent("+ Add");
+            	updateCountStatus();
+            	
+            });
+            
             
             //Delete Corrective Actions
             dca=Y.one("#delete_corrective_actions");
@@ -174,6 +208,60 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             });
             
             
+            sca=Y.one("#edit_corrective_actions");
+            sca.on("click",function (e){
+            	
+            	class_length=document.getElementsByClassName('corrective_action_checkbox').length;
+            	total_sca=new Array();
+            	var j=0;
+            	for(i=0;i<class_length;i++){
+            		if(document.getElementsByClassName('corrective_action_checkbox')[i].checked==true){
+            		ca=document.getElementsByClassName('corrective_action_checkbox')[i].id;
+            		j++;
+            		break;
+            		}
+            	}
+            	
+            	if(parseInt(j)==1){
+            		Y.one(".lpw").show(true);
+		            	RightNow.Ajax.makeRequest("/cc/customerFeedbackSystem/getCorrectiveAction",{input:ca},{
+		                    successHandler: function (response) {
+		
+		                        if(response.responseText!=""){
+		                        	//console.log(response.responseText);
+		                           ca_json=JSON.parse(response.responseText);
+		                           document.getElementById('corrective_actions_details').value=ca_json.Details;
+		                           document.getElementById('corrective_actions_description').value=ca_json.Description;
+		                           document.getElementById('corrective_actions_complete').value=ca_json.Complete;
+		                           document.getElementById('corrective_actions_completion_date').value=ca_json.CompletionDate;
+		                           document.getElementById('corrective_actions_due_date').value=ca_json.DueDate;
+		                           document.getElementById('corrective_actions_edit_id').value=ca_json.ID;
+		                           
+		                           Y.one('#add_corrective_action').show(true);
+		                           add_tca.setContent("- Hide");
+		                           Y.one(".lpw").hide(true);
+		                           document.getElementById('submitCorrectiveAction').style.display="none";
+	                               document.getElementById('editCorrectiveAction').style.display="block";                  
+		                        }
+		                        
+		                    },
+		                    async:false,
+		                    scope: this,
+		                    json: false,
+		                    type: "POST"
+		                });
+                
+            	}
+            	else{
+            		alert("Please Select One Item to edit !");
+            	}
+            	
+            });
+            
+            
+           
+            
+            
           }); //Events ends here.
           
           
@@ -259,4 +347,6 @@ function centralCheck(){
 function updateCountStatus(){
 	var tca=parseInt(document.getElementsByClassName('corrective_action_checkbox').length);
 	document.getElementById('total_corrective_actions').innerHTML="("+tca+")";
+	document.getElementById('submitCorrectiveAction').style.display="block";
+	document.getElementById('editCorrectiveAction').style.display="none";
 }
