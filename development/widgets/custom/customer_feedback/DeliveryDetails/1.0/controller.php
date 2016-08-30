@@ -11,6 +11,7 @@ class DeliveryDetails extends \RightNow\Libraries\Widget\Base {
         $i_id=getUrlParm('i_id');
         $order_details=$ci->model('custom/CustomerFeedbackSystem')->getDeliveryOrderDetails($i_id);
         $this->data['delivery_order_details']=$order_details;
+		
         return parent::getData();
      
     }

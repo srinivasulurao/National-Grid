@@ -157,13 +157,14 @@ class ProductCategoryInput extends \RightNow\Widgets\ProductCategoryInput {
 		//echo "<pre>";
 		//print_r($hierData);
 		//echo "</pre>";
-		
+		$hs=sizeof($hierData);
 		$newHierData=array();
-		foreach($hierData[0] as $hd):
-			if(in_array($hd['id'],$op_link[$org_id]))
-			$newHierData[0][]=$hd;
-		endforeach;	
-		
+		for($i=0;$i<$hs;$i++):
+			foreach($hierData[$i] as $hd):
+				if(in_array($hd['id'],$op_link[$org_id]))
+				$newHierData[$i][]=$hd;
+			endforeach;	
+		endfor;
 		return $newHierData;
     } 
 	private function _getFilterList()

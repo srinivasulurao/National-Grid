@@ -565,8 +565,10 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->request_type=intval($formData['Incident.CustomFields.c.request_type']->value);
             if($formData['Incident.CustomFields.c.draft']->value)
                 $incident->CustomFields->c->draft=intval($formData['Incident.CustomFields.c.draft']->value);
-            if($formData['Incident.CustomFields.c.draft']->value)
-                $incident->StatusWithType->Status=($formData['Incident.CustomFields.c.draft']->value)?108:0; //Save as a draft option
+            if(1):
+				$incident->CustomFields->c->draft=($formData['Incident.CustomFields.c.draft']->value)?1:0;
+                $incident->StatusWithType->Status=($formData['Incident.CustomFields.c.draft']->value)?108:8; //Save as a draft/Updated option
+			endif;    
             if($formData['c$target_date']->value)
                 $incident->CustomFields->c->target_date=strtotime($formData['c$target_date']->value);
 			if($formData['Incident.CustomFields.c.formal_response']->value)
@@ -645,9 +647,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         $ci=get_instance();
         $user=$ci->session->getProfile();
         $org_id=$user->org_id->value;
-        $org_id=2;
+        
         if($search_term && $org_id):
-            //$sql_instance = RNCPHP\ROQL::query("SELECT * from CFS.Delivery WHERE CFS.Delivery.Plant='$org_id' AND (CFS.Delivery.Delivery LIKE '%$search_term%' OR CFS.Delivery.CustomerPONumber LIKE '%$search_term%' OR CFS.Delivery.SoldToCustomerName LIKE '%$search_term%' OR CFS.Delivery.ShipToCustomerName LIKE '%$search_term%' OR CFS.Delivery.SoldToCustomerRegion LIKE '%$search_term%') GROUP BY CFS.Delivery.Delivery")->next();
+            
             $sql_instance=RNCPHP\ROQL::query("SELECT * FROM CFS.Delivery WHERE CFS.Delivery.Organization='$org_id' AND CFS.Delivery.Delivery LIKE '%$search_term%' GROUP BY CFS.Delivery.Delivery")->next();
             $data=array();
             $counter=0;
@@ -669,7 +671,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         $ci=get_instance();
         $user=$ci->session->getProfile();
         $org_id=$user->org_id->value;
-        //$org_id=1;
+        
 
         if(($delivery_no or $customer_po_no or $ship_to_customer or $sold_to_customer) && $org_id):
             $sql="SELECT * from CFS.Delivery WHERE CFS.Delivery.Organization='$org_id' AND (";
@@ -1004,10 +1006,20 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
     function getDeliveryOrderDetails($i_id){
         $incident = RNCPHP\Incident::fetch($i_id);
-        $results=array();
-        $results['SoldToCustomerName']=$incident->CustomFields->c->sold_to_customer_name;
-        $results['ShipToCustomerName']=$incident->CustomFields->c->ship_to_customer_name;
-        $results['ProductNumber']=$incident->CustomFields->c->product_no;
+		$dlis=RNCPHP\ROQL::queryObject("Select CFS.IncidentDeliveryItem FROM CFS.IncidentDeliveryItem WHERE CFS.IncidentDeliveryItem.Incident='$i_id'")->next();
+        
+        // $results=array();
+        // $results['SoldToCustomerName']=$incident->CustomFields->c->sold_to_customer_name;
+        // $results['ShipToCustomerName']=$incident->CustomFields->c->ship_to_customer_name;
+        // $results['ProductLine']=$incident->CustomFields->c->product_no;
+		// $results['Category ']-$incident->Category
+		
+		$results=array();
+		while($dli=$dlis->next()):
+			$results[]=RNCPHP\CFS\Delivery::fetch($dli->delivery_id);
+		endwhile;
+			
+			
         return $results;
     }
 
@@ -1186,7 +1198,6 @@ public function addCorrectiveActionModel(){
 	
 	$corrective_action=new RNCPHP\CFS\CorrectiveAction();
 	
-	if($_GET['complete'])
 	$corrective_action->Complete=$_GET['complete'];
 	if($_GET['completion_date'])
 	$corrective_action->CompletionDate=strtotime($_GET['completion_date']);
@@ -1208,7 +1219,6 @@ public function addCorrectiveActionModel(){
 public function editCorrectiveActionModel(){
 	$corrective_action=RNCPHP\CFS\CorrectiveAction::fetch($_GET['edit_id']);
 	
-	if($_GET['complete'])
 	$corrective_action->Complete=$_GET['complete'];
 	if($_GET['completion_date'])
 	$corrective_action->CompletionDate=strtotime($_GET['completion_date']);
@@ -1244,6 +1254,19 @@ public function SaveThreadSendMailModel($data,$i_id){
                 $incident->Threads[0]->EntryType = new RNCPHP\NamedIDOptList();
                 $incident->Threads[0]->EntryType->ID = 3; // Used the ID here. See the Thread object for definition
                 $incident->Threads[0]->Text =$formData['Incident.Threads']->value;
+            }
+			
+			$value = $formData['Incident.FileAttachments']->value;
+            if(is_array($value) && count($value)){
+                $incident->FileAttachments = new RNCPHP\FileAttachmentIncidentArray();
+                foreach($value as $attachment){
+                    if($tempFile =   get_cfg_var('upload_tmp_dir') . '/' . $attachment->localName) {
+                        $file = $incident->FileAttachments[] = new RNCPHP\FileAttachmentIncident();
+                        $file->ContentType = $attachment->contentType;
+                        $file->setFile($tempFile);
+                        $file->FileName = preg_replace("/[\r\n\/:*?\"<>|]+/", '_', $attachment->userName);
+                    }
+                }
             }
 			
 			$incident->save(RNCPHP\RNObject::SuppressAll);
@@ -1372,6 +1395,13 @@ function getStatusIdByStatusName($searchtext){
 		return 0;
 }
 
+function deliveryFind($delivery_no, $sold_to_customer_name){
+	$deliverys=RNCPHP\ROQL::queryObject("SELECT CFS.Delivery FROM CFS.Delivery WHERE CFS.Delivery.Delivery='$delivery_no' AND CFS.Delivery.SoldToCustomerName='$sold_to_customer_name'")->next();
+	while($delivery=$deliverys->next()):
+		return $delivery;
+	endwhile;		
+}
+
 function getActionItemAttachment($id){
 	
 	$action_item=RNCPHP\CFS\ActionItem::fetch($id);
@@ -1386,7 +1416,7 @@ function getCorrectiveAction_Model($input){
 	$data['ID']=$input;
 	$data['Details']=$corrective_action->Details;
 	$data['Description']=$corrective_action->Description;
-	$data['Complete']=$corrective_action->Complete;
+	$data['Complete']=($corrective_action->Complete)?1:0;
 	$data['CompletionDate']=date("Y-m-d",$corrective_action->CompletionDate);
 	$data['DueDate']=date("Y-m-d",$corrective_action->DueDate);
 	
@@ -1404,6 +1434,8 @@ function getProdOrgLinking(){
     return $data;			
 	
 }
+
+
 
 
 } //Class Ends Here !

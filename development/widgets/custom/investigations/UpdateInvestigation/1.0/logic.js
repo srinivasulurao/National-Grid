@@ -48,7 +48,7 @@ Custom.Widgets.investigations.UpdateInvestigation = RightNow.Widgets.extend({
 			      //Hide the contact Lookup.			
 			      var cl = Y.all('.rn_FormSubmit');
 			      cl.on("hover", function (e) {   
-			      	            Y.one("#contact_look_up").setContent("");
+			      Y.one("#contact_look_up").setContent("");
 			      }); 
 			      
 			            
@@ -64,8 +64,13 @@ Custom.Widgets.investigations.UpdateInvestigation = RightNow.Widgets.extend({
      * Sample widget method.
      */
     callThreads: function(type,args) {
-    	//console.log(args);
-    	//console.log(args.data.results.transaction.incident.value);
+    	YUI().use('transition','event','panel', function(Y) {
+    		document.getElementsByName('Incident.Threads')[0].value="";
+    		document.getElementsByName('Contact.Emails.PRIMARY.Address')[0].value="";
+    		Y.one(".rn_FileAttachmentUpload ul").setContent("");
+    		Y.one('#thread_submit').toggleView();
+    		Y.one('#add_thread').setContent("+ Add");
+    	});
     },
 
     /**

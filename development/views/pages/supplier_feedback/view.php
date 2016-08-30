@@ -1,4 +1,4 @@
-<rn:meta title="Customer Complaint" template="standard.php" login_required="true"/>
+<rn:meta title="View Supplier Complaint" template="standard.php" login_required="true"/>
 <style>
     .rn_Label{
         display:block !important;

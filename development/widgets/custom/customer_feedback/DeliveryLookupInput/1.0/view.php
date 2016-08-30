@@ -12,6 +12,7 @@ $widget_id=str_replace("DeliveryLookupInput_","",$widget_id);
 <button type='button' id='ddgb' style='height:37px !important'>Delivery Lookup</button>
 <div class='deliveryDetailsGrid' id="deliveryDetailsGrid">
 <div id='DeliverySearchPlay'>
+<form id="deliveryLookupPlayForm" method=""> 
 <label>Delivery #</label>
 <input type='text' id='delivery_no' >
 <label>Customer PO Number</label>
@@ -24,6 +25,7 @@ $widget_id=str_replace("DeliveryLookupInput_","",$widget_id);
 <button type='button' id='search_delivery' class='button'>Search</button>
 <button type='button'  id='search_delivery_reset' class='button'>Reset</button>
 <button type='button' id='close_delivery_lookup_butt' class=''>Close</button>
+</form>
 </div>
 </div>
 

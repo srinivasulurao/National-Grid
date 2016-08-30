@@ -55,7 +55,7 @@ Custom.Widgets.customer_feedback.DeliveryLookupInput = RightNow.Widgets.extend({
         //#######################################################################################
 
         YUI().use('event', function (Y) {
-            reset_html='<label>Delivery #</label><input type="text" id="delivery_no" ><label>Customer PO Number</label><input type="text" id="customer_po_no"><label>Sold to Customer Name</label><input type="text" id="sold_to_customer"><label>Ship to Customer Name</label><input type="text" id="ship_to_customer">';
+            reset_html='<form id="deliveryLookupPlayForm"><label>Delivery #</label><input type="text" id="delivery_no" ><label>Customer PO Number</label><input type="text" id="customer_po_no"><label>Sold to Customer Name</label><input type="text" id="sold_to_customer"><label>Ship to Customer Name</label><input type="text" id="ship_to_customer"></form>';
             var ddgb = Y.one("#ddgb");
             ddgb.on("click", function (e) {
 

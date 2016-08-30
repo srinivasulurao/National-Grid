@@ -60,16 +60,22 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 	
 	function getCustomerDetails(){
 		$i_id=getUrlParm('i_id');
-		$incident=$this->ci_instance->model('custom/CustomerFeedbackSystem')->investigationDetails($i_id);
+		$parent_id=$this->ci_instance->model('custom/CustomerFeedbackSystem')->getParentIncidentId($i_id);
+		$incident=$this->ci_instance->model('custom/CustomerFeedbackSystem')->investigationDetails($parent_id);
 		$customer=array();
-		$customer['Name']=$incident->PrimaryContact->Name->First. " ".$incident->PrimaryContact->Name->Last;
-		$customer['City']=$incident->PrimaryContact->Address->City;
-		$customer['Country']=$incident->PrimaryContact->Address->Country;
-		$customer['Zip']=$incident->PrimaryContact->Address->PostalCode;
-		$customer['State']=$incident->PrimaryContact->Address->StateOrProvince;
-		$customer['Street']=$incident->PrimaryContact->Address->Street;
-		$customer['Organization']=$incident->Organization->LookupName;
-		$customer['Member Since']=date("Y-m-d H:i A",$incident->CreatedTime);
+		$customer['Sold To Customer Name']=$incident->CustomFields->c->sold_to_customer_name;
+		
+		//Sold To Customer data needs to there.
+		
+		$df=$this->ci_instance->model('custom/CustomerFeedbackSystem')->deliveryFind($incident->CustomFields->CFS->Delivery->Delivery, $incident->CustomFields->c->sold_to_customer_name);
+		
+		$customer['Sold To Customer Region']=$df->SoldToCustomerRegion;
+		$customer['Ship To Customer Name']=$df->ship_to_customer_name;
+		$customer['City']=$df->ShipToCity;
+		$customer['Country']=$df->DestinationCountry;
+		$customer['Zip']=$df->ShipToPostalCode;
+		$customer['State']=$df->DestinationRegion;
+		$customer['Street']=$df->ShipToStreet;
 		
 		
 		return $customer;
@@ -77,7 +83,8 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 	
 	function getDeliveryDetails(){
 		$i_id=getUrlParm('i_id');
-		$delivery=$this->ci_instance->model('custom/CustomerFeedbackSystem')->getDeliveryInvestigationDetails($i_id);
+		$parent_id=$this->ci_instance->model('custom/CustomerFeedbackSystem')->getParentIncidentId($i_id);
+		$delivery=$this->ci_instance->model('custom/CustomerFeedbackSystem')->getDeliveryInvestigationDetails($parent_id);
 		//$this->d($delivery);
 		return $delivery;
 		

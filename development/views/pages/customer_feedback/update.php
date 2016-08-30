@@ -1,4 +1,4 @@
-<rn:meta title="Customer Complaint" template="standard.php" login_required="true"/>
+<rn:meta title="Update Customer Complaint" template="standard.php" login_required="true"/>
 <style>
     .rn_Label{
         display:block !important;
@@ -46,8 +46,8 @@ font-weight:bold;
                 <span id='prod_sample_ret' style='display:none'><rn:widget path="input/TextInput"  name="Incident.c$product_sample_returned_to" default_value="" /></span>
                 </span>
                 <rn:widget path="input/TextInput"  name="Incident.Subject" default_value="" label_input="Subject" required="true" />
-                <rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" />
-                <rn:widget path="input/TextInput"  name="Incident.Threads" default_value="" label_input="Add to Thread"  required="true"/>
+                <rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" label="Comments" />
+                <rn:widget path="input/TextInput"  name="Incident.Threads" default_value="" label_input="Add Comment"  required="true"/>
                 <rn:widget path="custom/customer_feedback/DatePickerInput"  name="Incident.c$target_date" label_input="Target Date" required="true"/>
                 <rn:widget path="input/SelectionInput"  name="Incident.c$formal_response" label_input="Formal Response" default_value='0' required="true"/>
                 <rn:widget path="input/SelectionInput"  name="Incident.c$draft" default_value="0"  label_input="Save as Draft"/> 

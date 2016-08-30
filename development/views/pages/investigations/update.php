@@ -1,4 +1,4 @@
-<rn:meta title="Investigation of Complaints" template="standard.php" clickstream="list" login_required="true" //>
+<rn:meta title="Update Investigation" template="standard.php" clickstream="list" login_required="true" //>
 
 <div class="rn_Hero">
     <div class="rn_HeroInner">

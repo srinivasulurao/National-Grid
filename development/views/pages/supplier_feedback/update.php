@@ -1,4 +1,4 @@
-<rn:meta title="Supplier Complaint" template="standard.php" clickstream="Edit" login_required="true"//>
+<rn:meta title="Update Supplier Complaint" template="standard.php" clickstream="Edit" login_required="true"//>
 
 <div class="rn_Hero">
     <div class="rn_HeroInner">
