@@ -1,0 +1,23 @@
+/**
+ * base.css: Base CSS for UpdateInvestigation
+ */
+.rn_UpdateInvestigation {
+
+}
+
+.rn_DataLabel{
+    background: black;
+    color: white;
+    padding: 10px;
+    display: block;
+    width: 99% !important;
+    margin: 10px 0 0 0;
+    font-size: 20px;
+}
+
+#thread_submit{
+	border:1px solid lightgrey;
+	margin-top:10px;
+	margin-bottom:10px;
+	padding:10px;
+}

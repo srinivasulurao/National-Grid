@@ -7,7 +7,7 @@ namespace Custom\Models;
  */
 class ReportCustomModel extends \RightNow\Models\Report
 {
-    
+
 	    public function getDataHTML($reportID, $reportToken, $filters, $format, $useSubReport = true, $forceCacheBust = false, $cleanFilters = true)
     {
         if ($filters && $cleanFilters) {
@@ -32,11 +32,11 @@ class ReportCustomModel extends \RightNow\Models\Report
             $this->getOtherKnowledgeBaseData();
         }
         return $this->getResponseObject($this->returnData, 'is_array');
-	
-	
+
+
 	}
-	
-	
+
+
 	private function getCleanFilterFunctions() {
         $cleanModerationDateFilter = function($dateFilterValue) {
             if (empty($dateFilterValue)) {
@@ -64,7 +64,7 @@ class ReportCustomModel extends \RightNow\Models\Report
         return array("questions.updated" => $cleanModerationDateFilter,
             "comments.updated" => $cleanModerationDateFilter);
     }
-	
+
 	   private static function getSubReportMapping(){
         static $subReportMapping = array();
         if (!$subReportMapping) {
@@ -109,7 +109,7 @@ class ReportCustomModel extends \RightNow\Models\Report
         }
         return $subReportMapping;
     }
-	
+
 	protected function filtersToSearchArgs()
     {
         $searchArgs = array();
@@ -143,7 +143,7 @@ class ReportCustomModel extends \RightNow\Models\Report
 
                 if($value->filters->fltr_id && !$this->isFilterIDValid($value->filters->fltr_id)) {
                     continue;
-                } 
+                }
 
 				//print_r($key);
                 // handle keyword term
@@ -314,22 +314,22 @@ class ReportCustomModel extends \RightNow\Models\Report
                 }
             }
         }
-      
+
 	    ######################################################################################
 	    #########################Custom Incident filter ######################################
 	    ######################################################################################
-	    
-        //$searchArgs=array();
-		
+
+        $searchArgs=array();
+
         //$searchArgs = $this->addContactInformation($contactData, $searchArgs, $count);
         //$searchArgs = $this->addContactInformationFiltered($contactData, $searchArgs, $count);
-        
+
         $ci=&get_instance();
         $profile=$ci->session->getProfile();
         $org_id=$profile->org_id->value;
         $c_id=$profile->c_id->value;
 		$Uri_result=explode('/',$_SERVER['REQUEST_URI']);
-		
+
 		//$searchArgs['search_field0']=array("name"=>"contacts.c_id","oper"=>1,"val"=>$c_id); //Default to a profile.
 		############################################
 		//Condition for supplier & customer Feedback
@@ -338,13 +338,13 @@ class ReportCustomModel extends \RightNow\Models\Report
             $searchArgs['search_field0']=array("name"=>"contacts.org_id","oper"=>1,"val"=>$org_id);
         }
         if($ci->session->getSessionData('complaint_filter_individual')=="c_id" && $c_id){
-            $searchArgs['search_field0']=array("name"=>"incidents.c_id","oper"=>1,"val"=>$c_id);
+            $searchArgs['search_field0']=array("name"=>"contacts.c_id","oper"=>1,"val"=>$c_id);
         }
-        
+
 		//##########################################
 		//#########Default Onload Filter Set for investigation.
 		//##########################################
-		
+
 		if($Uri_result[2]=='investigations')
 			{
 				//Just show closed investigations.
@@ -358,71 +358,72 @@ class ReportCustomModel extends \RightNow\Models\Report
 			{
 				$searchArgs=array();
 				$searchArgs['search_field0']=array("name"=>5,"oper"=>1,"val"=>$c_id);
-			}	
-					
+			}
+
 		#############################################
 		//######Advanced Search Filter###############
 		#############################################
-		
-		
+
+		if($Uri_result[2]=='customer_feedback' && $ci->session->getSessionData('complaint_filter')=='search_text')
+		{
+
+			$srch=$ci->session->getSessionData('search_text');
+			$status_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName($srch);
+
+			if(!empty($srch))
+			{
+				$report_id=100089;
+				$columns=array('Contact Name','Sold To Customer','Ship To Customer Name','Subject','Status','Product Line Item','Plant','Reference Number');
+				$counter=1;
+				foreach($columns as $column):
+				$filter=$this->getFilterByName($report_id,$column);
+				$val=($column=="Status")?$status_id:$srch;
+				$searchArgs['search_field'.$counter]=array("name"=>$filter->result['fltr_id'],"oper"=>7,"val"=>"%$val%");
+				$counter++;
+				endforeach;
+			}
+
+		}
+
 			if($Uri_result[2]=='supplier_feedback' && $ci->session->getSessionData('complaint_filter')=="search_text")
 			{
 				$srch=$ci->session->getSessionData('search_text');
 				$status_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName($srch);
-				
+
 				if(!empty($srch))
 				{
-					$searchArgs['search_field1']=array("name"=>"1","oper"=>7,"val"=>"%$srch%");//Contact Name
-					$searchArgs['search_field2']=array("name"=>"2","oper"=>7,"val"=>"%$srch%"); //Subject
-					$searchArgs['search_field3']=array("name"=>"3","oper"=>7,"val"=>"%$status_id%"); //Status
-					$searchArgs['search_field4']=array("name"=>"4","oper"=>7,"val"=>"%$srch%"); //Customer PO Number
-					$searchArgs['search_field5']=array("name"=>"5","oper"=>7,"val"=>"%$srch%"); //Plant
-					$searchArgs['search_field6']=array("name"=>"6","oper"=>7,"val"=>"%$srch%"); //Supplier Name
-					$searchArgs['search_field7']=array("name"=>"7","oper"=>7,"val"=>"%$srch%"); //reference No.
-					
+          $report_id=100088;
+          $columns=array('Coordinator','Subject','Supplier Name','Subject','Status','PO Number','Plant','Reference Number');
+          $counter=1;
+          foreach($columns as $column):
+      		$filter=$this->getFilterByName($report_id,$column);
+          $val=($column=="Status")?$status_id:$srch;
+          $searchArgs['search_field'.$counter]=array("name"=>$filter->result['fltr_id'],"oper"=>7,"val"=>"%$val%");
+          $counter++;
+          endforeach;
 				}
 			}
-			if($Uri_result[2]=='customer_feedback' && $ci->session->getSessionData('complaint_filter')=='search_text')
-			{
-				
-				$srch=$ci->session->getSessionData('search_text');
-				$status_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName($srch);
-				
-				if(!empty($srch))
-				{
-									
-					$searchArgs['search_field1']=array("name"=>"1","oper"=>"7","val"=>"%$srch%"); //Contact.
-					$searchArgs['search_field2']=array("name"=>"2","oper"=>"7","val"=>"%$srch%"); //Sold to customer name
-					$searchArgs['search_field3']=array("name"=>"3","oper"=>"7","val"=>"%$srch%"); //Ship to customer name.
-					$searchArgs['search_field4']=array("name"=>"4","oper"=>"7","val"=>"%$srch%"); //Subject.
-					$searchArgs['search_field5']=array("name"=>"5","oper"=>"7","val"=>"%$status_id%"); //Status.
-					$searchArgs['search_field6']=array("name"=>"6","oper"=>"7","val"=>"%$srch%"); //Product/Delivery Line Item.
-					$searchArgs['search_field7']=array("name"=>"7","oper"=>"7","val"=>"%$srch%"); //Plant
-					$searchArgs['search_field8']=array("name"=>"8","oper"=>"7","val"=>"%$srch%"); //reference No.
-					
-				
-				}
-			}
-			
+
 			if($Uri_result[2]=='investigations' && $ci->session->getSessionData('complaint_filter')=='search_text')
 			{
-				
+
 				$srch=$ci->session->getSessionData('search_text');
 				$status_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName($srch);
 				//echo $status_id;
 				if(!empty($srch))
 				{
-										
-					$searchArgs['search_field1']=array("name"=>"1","oper"=>7,"val"=>"%$srch%"); //reference No.
-					$searchArgs['search_field2']=array("name"=>"2","oper"=>7,"val"=>"%$srch%"); //Subject
-					$searchArgs['search_field3']=array("name"=>"3","oper"=>7,"val"=>"%$srch%"); //Customer Name.
-					$searchArgs['search_field4']=array("name"=>"4","oper"=>7,"val"=>"%$status_id%"); //status.
-					$searchArgs['search_field5']=array("name"=>"5","oper"=>7,"val"=>"%$srch%"); //Category.
-					//$searchArgs['search_field6']=array("name"=>"7","oper"=>7,"val"=>"%$status_id%"); //status Open to close
-				
+          $report_id=100012;
+          $columns=array('Subject','Reference Number','Customer Name','Status','Category');
+          $counter=2;
+          foreach($columns as $column):
+      		$filter=$this->getFilterByName($report_id,$column);
+          $val=($column=="Status")?$status_id:$srch;
+          $searchArgs['search_field'.$counter]=array("name"=>$filter->result['fltr_id'],"oper"=>7,"val"=>"%$val%");
+          $counter++;
+          endforeach;
 				}
 			}
-			
+
 			if($Uri_result[2]=='action_items' && $ci->session->getSessionData('complaint_filter')=='search_text')
 			{
 				//Show the list just created by him.
@@ -430,19 +431,19 @@ class ReportCustomModel extends \RightNow\Models\Report
 				$status_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName($srch);
 				if(!empty($srch))
 				{
-									
+
 					$searchArgs['search_field1']=array("name"=>"1","oper"=>7,"val"=>"%$srch%"); //Description
 					$searchArgs['search_field2']=array("name"=>"2","oper"=>7,"val"=>"%$srch%"); //ID
 					$searchArgs['search_field3']=array("name"=>"3","oper"=>7,"val"=>"%$srch%"); //Category.
 					$searchArgs['search_field4']=array("name"=>"4","oper"=>7,"val"=>"%$srch%"); //Action Group
 					$searchArgs['search_field0']=array("name"=>"5","oper"=>1,"val"=>$c_id);	//Own Contact
-					
+
 				}
 			}
-        
+
 		   //$this->d($status_id);
-           //$this->d($searchArgs);
-           
+       //$this->d($searchArgs);
+
         return $searchArgs;
     }
 
@@ -453,8 +454,8 @@ class ReportCustomModel extends \RightNow\Models\Report
 		print_r($data);
 		echo "</pre>";
 	}
-	
-	
+
+
 	public function setSortArgsColumn (array $filters, $colID, $sortOrder = null, $sortDirection = null) {
         if (is_object($filters["sort_args"])) {
             if ($filters["sort_args"]->filters->data->col_id) {
@@ -484,6 +485,6 @@ class ReportCustomModel extends \RightNow\Models\Report
         }
         return $filters;
     }
-	
-	
+
+
 }

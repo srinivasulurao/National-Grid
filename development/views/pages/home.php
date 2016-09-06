@@ -44,20 +44,6 @@
                         <li class="rn_Item">
                             <div class="rn_VisualItemContainer">
                                 <div class="rn_ImageContainer">
-                                    <a class="rn_ItemLink" href="/app/home">
-                                    <img alt="" src="/euf/assets/images/nav_icons/home.png" /></a>
-                                </div>
-        
-                                <div class="rn_ActionContainer" style="height: 48px;">
-                                    <a class="rn_ItemLink" href="/app/home">
-                                    Home</a>
-                                </div>
-                            </div>
-                        </li>
-                        
-                        <li class="rn_Item">
-                            <div class="rn_VisualItemContainer">
-                                <div class="rn_ImageContainer">
                                     <a class="rn_ItemLink" href="/app/customer_feedback/list">
                                     <img alt="" src="/euf/assets/images/nav_icons/customer_feedback.png" /></a>
                                 </div>

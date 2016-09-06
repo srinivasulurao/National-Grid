@@ -1,9 +1,9 @@
 <?
-/* 
- * Author: Ryan Seltzer 
+/*
+ * Author: Ryan Seltzer
  * Project Location: http://tools.src.rightnow.com/code/forward-and-track/git/nodes
  * Blob Hash: $Id: 07f906ee827c210de4154a90fa86db3828f86b01 $
- * Description: These are the pages for allowing incident updates via a direct link secured via token for a specific amount of time.  The security of these pages are as good as the security of the link itself during its valid time period in addition to IP addresses restrictions. 
+ * Description: These are the pages for allowing incident updates via a direct link secured via token for a specific amount of time.  The security of these pages are as good as the security of the link itself during its valid time period in addition to IP addresses restrictions.
 */
 // ----------------------------------------------------------------------------
 //       File Name: fnt_incident_update.php
@@ -109,7 +109,7 @@ try
 
 	//$VIEW_FATTACH_ENABLED = true;
 	//$ADD_FATTACH_ENABLED = true;
-	
+
 	//now pull down the username and password from FNT$FNTConfig and use them to re-initialize API
 	//This is necessary for calling getAdminURL to allow downloading of file attachments from this page
 
@@ -119,7 +119,7 @@ catch ( RNCPHP\ConnectAPIError $err )
 {
     echo $temp = $err->getLine()." :: ".$err->getMessage();
     //echo "Error:  $temp\n";
-    PSLog::error("ConnectAPIError: $temp");
+    PSLog::error("sss ConnectAPIError: $temp");
     exit();
 }
 
@@ -131,7 +131,7 @@ $token = TokenAuth::GetInstance($_GET, $FNTConfig->SecurityString); //	ChemFNT56
 $valid_token = $token->Validate();
 
 $valid_token=(base64_decode($_GET['p_tok'])==$FNTConfig->SecurityString && time() < $_GET['p_exp'])?1:0;
-if(!($valid_token)) 
+if(!($valid_token))
 {
     print("Access Denied");
 	//This is not necessarily a hacking attempt, it could just be an invalid token
@@ -164,7 +164,7 @@ if (!$incident)
 if ($ADD_FATTACH_ENABLED)
 {
 
-	//add attachments to POST VARS 
+	//add attachments to POST VARS
 	if ($p_add_fattach || $p_new_fattach_size || $p_single_file)
 	{
 	    if (!$p_new_fattach_size)
@@ -172,7 +172,7 @@ if ($ADD_FATTACH_ENABLED)
     		PSLog::error("Error: File attachment upload failed");
 	        print("File attachment upload failed.");
 	        exit;
-		}	
+		}
 	    $tmp_name = basename(strval($p_new_fattach));
 	    $tmp_name = substr($tmp_name, 3);
 	    $tmp_name = '/tmp/'.$tmp_name;
@@ -188,7 +188,7 @@ if ($ADD_FATTACH_ENABLED)
 	{
 		try
 		{
-    		//ADD THE ATTACHMENTS TO THE INCIDENT 
+    		//ADD THE ATTACHMENTS TO THE INCIDENT
     		$incident->FileAttachments = new RNCPHP\FileAttachmentIncidentArray();
 		    $fattach = new RNCPHP\FileAttachmentIncident();
 		    $fattach->ContentType = $p_fattach_type;
@@ -207,7 +207,7 @@ if ($ADD_FATTACH_ENABLED)
 		    echo "SME Add Attachment Failure. Error:  $temp\n";
 		    PSLog::error("SME Add Incident Attachment Failure: ERROR_MSG: $temp");
 		}
-	}	
+	}
 }//END IF attachments
 
 
@@ -223,16 +223,17 @@ if($p_response and !$p_fattach) //if they submitted then add the note
 		}else{
 			$extraText = '';
 		}
-
+      $third_party_email=base64_decode($_GET['p_created']);
     	$incident->Threads = new RNCPHP\ThreadArray();
     	$incident->Threads[0] = new RNCPHP\Thread();
     	$incident->Threads[0]->EntryType = new RNCPHP\NamedIDOptList();
-    	$incident->Threads[0]->EntryType->ID = 1; //add the thread as a private note
-        $third_party_email=base64_decode($_GET['p_created']);
-        $question_asked="<label style='color:red;display:inline-block'>".base64_decode($_GET['p_asked_by'])." : </label>".base64_decode($_GET['p_ques'])."<br>";
-    	$incident->Threads[0]->Text =$question_asked."<label style='color:green;display:inline-block'>FNT User : </label>".$p_response . "<br>* This entry was added by [{$third_party_email}] via forward and track".$extraText; //$p_response is a $_POST variable
-        $incident->StatusWithType->Status->ID = $FNTConfig->statusid_responded;
-        $incident->save(RNCPHP\RNObject::SuppressAll);
+    	$incident->Threads[0]->EntryType->ID  = 4; //Customer Proxy
+      $incident->Threads[0]->ContentType=new RNCPHP\NamedIDOptList();
+      $incident->Threads[0]->ContentType->ID=2;
+      $question_asked="<span style='color:black;display:inline-block;text-decoration:underline'>".base64_decode($_GET['p_asked_by'])."</span> : ".base64_decode($_GET['p_ques'])."<br>";
+    	$incident->Threads[0]->Text =$question_asked."<span style='color:black;display:inline-block;text-decoration:underline'>FNT User</span> : ".$p_response . "<br>* This entry was added by [{$third_party_email}] via forward and track".$extraText; //$p_response is a $_POST variable
+      $incident->StatusWithType->Status->ID = $FNTConfig->statusid_responded;
+      $incident->save();
 
     	print("Thank you for submitting your response. You input has been added to this incident. You may close this window.");
 	}
@@ -244,10 +245,10 @@ if($p_response and !$p_fattach) //if they submitted then add the note
 	}
 	exit(); //always exit now
 }
-$p_refno = $incident->ReferenceNumber;
+        $p_refno = $incident->ReferenceNumber;
 
 // ----------------------------------------------------------------------------
-// -- Start Page Content ---------------------------------------------------- 
+// -- Start Page Content ----------------------------------------------------
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -282,7 +283,7 @@ div.banner {
 }
 div.thrtext {
     padding-bottom:10px;
-} 
+}
 div.warning {
     background-color:#FFFFE0;
     border:1px solid #808080;
@@ -340,14 +341,14 @@ background:#40526B;
 <form
 	name="_main"
 	method="post"
-	action="?<?=$querystring?>/#message"
+	action="?<?=$querystring?>"
 	enctype="multipart/form-data"
 
 	<input type="hidden" name="p_add_fattach" value="" />
 	<input type="hidden" name="p_single_file" value="0" />
 <!-- Question Attributes ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>- -->
 
-<div class="banner"> 
+<div class="banner">
 Reference No:&nbsp;&nbsp;<?= $p_refno ?>
 </div>
 
@@ -381,7 +382,7 @@ Reference No:&nbsp;&nbsp;<?= $p_refno ?>
 </div>
 <br />
 
-<div class="banner"> 
+<div class="banner">
 Threads
 </div>
 
@@ -399,12 +400,12 @@ if($thread->Text == base64_decode($_GET['p_ques']) || substr_count($thread->Text
 		{
 			case 1:
 			case 'Note':
-				$bgcolor = "#FFFFE0"; 
+				$bgcolor = "#FFFFE0";
 				$entered_by = $thread->Account->LookupName;
 				break;
 			case 2:
 			case 'Staff Account':
-				$bgcolor = "#E0EAD8"; 
+				$bgcolor = "#E0EAD8";
 				break;
 			case 3:
 			case 'Customer':
@@ -416,20 +417,20 @@ if($thread->Text == base64_decode($_GET['p_ques']) || substr_count($thread->Text
 				break;
 			case 4:
 			case 'Customer Proxy':
-				$bgcolor = "#D7E9F6"; 
+				$bgcolor = "#D7E9F6";
 				if(isset($thread->Contact->LookupName))
 				{
 					$entered_by = $thread->Contact->LookupName;
 				}
 				break;
 			default:
-				$bgcolor = "#CCCCCC"; 
-				break;	
+				$bgcolor = "#CCCCCC";
+				break;
 		}
 
 		printf("<div style=\"font-size:16px;background:%s;margin-top:5px;margin-bottom:5px;\">%s - %s<span style=\"float:right\">%s,  %s</span></div>", $bgcolor, $thread->EntryType->LookupName, $thread->Channel->LookupName, $entered_by, date("m/d/Y h:i:s A", $thread->CreatedTime));
 		printf("<div class=\"thrtext\">%s</div>", str_replace("\n", "<br />", $thread->Text));
-endif;	
+endif;
     } //end foreach
 ?>
 
@@ -443,7 +444,7 @@ endif;
 
 
 if($VIEW_FATTACH_ENABLED==true && count($incident->FileAttachments) > 0)
-{ 
+{
 	$nonprivatefilecount = 0;
 	foreach($incident->FileAttachments as $file) {
 		if(! $file->Private) {
@@ -473,7 +474,7 @@ if($VIEW_FATTACH_ENABLED==true && count($incident->FileAttachments) > 0)
 	        //$url = "test.com";
 	        printf("&nbsp;&nbsp;<li style=\"line-height:0.4em\"><a class=\"%s\" href=\"%s\">%s</a>\n",
 	                $file->ContentType, $url, $file->FileName);
-	
+
 	        if ($file->Private)
 			{
 	            echo ("&nbsp;&nbsp; <font color=\"#ff0000\">Private</font><br />\n");
@@ -527,7 +528,7 @@ if($ADD_FATTACH_ENABLED)
 <!-- New Information ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>- -->
 
 <br />
-<div class="banner"> 
+<div class="banner">
 Add Comments
 </div>
 
