@@ -383,7 +383,7 @@ Reference No:&nbsp;&nbsp;<?= $p_refno ?>
 <br />
 
 <div class="banner">
-Threads
+Comments
 </div>
 
 <div width="99%" style="border: 1px solid gray; padding: 5px;">

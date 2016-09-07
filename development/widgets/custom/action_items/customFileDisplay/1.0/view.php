@@ -1,7 +1,7 @@
-<label>File Attachments</label>
-<ul class='fileAttachment'>
 <?php
 $c=0;
+if(sizeof($this->data['attachments'])):
+echo "<label>File Attachments</label><ul class='fileAttachment'>";
 foreach($this->data['attachments'] as $attachment):
 	//echo "<pre>";
 	//print_r($attachment);
@@ -13,6 +13,7 @@ foreach($this->data['attachments'] as $attachment):
 	echo "<li>{$file}</li>";
 	$c++;
 endforeach;
+endif;
 ?>
 </ul>
 <br>

@@ -11,7 +11,7 @@ class TypeAheadSupplierLookup extends \RightNow\Libraries\Widget\Input {
 
     function getData() {
        // if (parent::getData() === false) return false;
-	   
+
 	  /* generic code block starts here*/
 		$validAttributes = explode('.',$this->data['attrs']['name']);
 		//print_r($validAttributes);
@@ -24,11 +24,11 @@ class TypeAheadSupplierLookup extends \RightNow\Libraries\Widget\Input {
 
             return;
 		}*/
-	
+
 		$pack = $validAttributes[0];
        $this->table = $validAttributes[1];
        $this->fieldName = $validAttributes[2];
-	   
+
 	    $this->CI->load->model('custom/CustomerFeedbackSystem');
 	   $this->data['field'] = $this->CI->CustomerFeedbackSystem->getBusinessObjectField($pack,$this->table,$this->fieldName );
 
@@ -41,25 +41,25 @@ class TypeAheadSupplierLookup extends \RightNow\Libraries\Widget\Input {
 	  	$this->dataType = $this->data['field']->data_type;
 	    $this->data['js']['type'] = $this->data['field']->data_type;
 	   }
-	   
+
 	  $url_id=getUrlParm(i_id);
 	  $this->CI->load->model('custom/CustomerFeedbackSystem');
 	  if($url_id)
 	   {
 		$data_value = $this->CI->CustomerFeedbackSystem->getsuppliervalues($url_id);
 	   $cname = $this->CI->CustomerFeedbackSystem->getsupplier($this->table,$data_value);
-	  
+
 		$this->data['field']->value=intval($data_value);
 		$this->data['cname']= $cname;
 		//$this->data['selected'] = intval($data_value);
 	   }
-	
+
     $this->data['displayType'] = $this->dataType;
         $this->data['js']['table'] = $this->table;
         $this->data['js']['name'] = $this->fieldName;
 		$this->data['constraints'] = array();
-		$this->data['js']['constraints'] = $this->data['constraints'];	
-		
+		$this->data['js']['constraints'] = $this->data['constraints'];
+
 		 if($this->data['attrs']['textarea'])
 		 {
 		 $displayType = $this->data['displayType'] = 'Textarea';
@@ -68,14 +68,14 @@ class TypeAheadSupplierLookup extends \RightNow\Libraries\Widget\Input {
 	   if($this->data['field']->data_type === "String")
 		 $this->data['inputType']="text";
 	}
-		 
-		
-	 
-	 
+
+
+
+
 		 if($this->data['field']->value)
 		{
 		$this->data['value'] = $this->data['field']->value;
-		
+
 		}
 		else
 		{
@@ -92,13 +92,13 @@ class TypeAheadSupplierLookup extends \RightNow\Libraries\Widget\Input {
         $this->data['checkreadonly'] = false;
        if($this->data['field']->readonly==1)
         {
-		 
+
              $this->data['checkreadonly'] = true;
         }
 
-	   
+
 	/*   generi code block ends here*/
-	
+
       /*  if (!in_array($this->dataType, array('String', 'Integer', 'Thread'))) {
             echo $this->reportError(sprintf(\RightNow\Utils\Config::getMessage(DATA_TYPE_PCT_S_APPR_TEXT_INPUT_MSG), $this->fieldName));
             return false;
@@ -166,7 +166,7 @@ class TypeAheadSupplierLookup extends \RightNow\Libraries\Widget\Input {
             $this->data['constraints']['requireValidation'] = true;
         }
 
-      
+
 /*
         //Standard Field
         if(!Connect::isCustomField($this->fieldMetaData)) {

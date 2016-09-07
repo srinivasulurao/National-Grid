@@ -1,0 +1,23 @@
+version: "1.0"
+requires:
+  jsModule:
+  - standard
+  - mobile
+  yui:
+  - panel
+  - overlay
+  - gallery-treeview
+  - RightNowTreeView
+  - RightNowTreeViewDialog
+  - RightNowTreeViewDropdown
+attributes:
+  only_display:
+    name: only_display
+    type: string
+    description: Comma separated filter list of product IDs to show.
+    default: ""
+    required: false
+extends:
+  widget: standard/input/ProductCategoryInput
+  components:
+  - php

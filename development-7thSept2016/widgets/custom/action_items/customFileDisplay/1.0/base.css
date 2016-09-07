@@ -1,0 +1,15 @@
+/**
+ * base.css: Base CSS for customFileDisplay
+ */
+.rn_customFileDisplay.rn_FileListDisplay {
+
+}
+
+.fileAttachment li{
+	background:none;
+	border:0px;
+}
+
+.fileAttachment{
+	list-style:square !important;
+}

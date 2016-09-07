@@ -32,8 +32,8 @@
 	<rn:widget path="custom/supplier_feedback/TypeAheadSupplierLookup" name="CFS.Supplier.Name" read_only="true" required="true"  label_input="Supplier name" required="true"/>
 	<rn:widget path="input/TextInput"  name="Incident.c$supplier_order_number" label_input="PO Number"  />
 	<rn:widget path="input/TextInput"  name="Incident.Subject" label_input="Subject" required="true" />
-	<rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" />
-	<rn:widget path="input/TextInput"  name="Incident.Threads" label_input="Add to thread"  />
+	<rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" label="Comments" />
+	<rn:widget path="input/TextInput"  name="Incident.Threads" label_input="Add to Comments"  />
 	<rn:widget path="input/TextInput"  name="Incident.c$proposed_solution" label_input="Proposed Solution"  />
 	<rn:widget path="custom/supplier_feedback/customDatePickerr"  name="Incident.c$target_date" label_input="Target Date"  />
   <?php if($review_state): ?><rn:widget path='input/SelectionInput' name='Incident.c$complaint_resolved' label_input="Complaint Resolved" /><?php endif; ?>

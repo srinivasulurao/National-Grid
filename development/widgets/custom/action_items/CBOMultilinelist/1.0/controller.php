@@ -11,7 +11,7 @@ class CBOMultilinelist extends \RightNow\Widgets\Multiline {
 		print_r($data);
 		echo "</pre>";
     }
-	
+
     function getData() {
         $format = array(
             'truncate_size' => $this->data['attrs']['truncate_size'],
@@ -21,26 +21,26 @@ class CBOMultilinelist extends \RightNow\Widgets\Multiline {
             'urlParms' => \RightNow\Utils\Url::getParametersFromList($this->data['attrs']['add_params_to_url']),
         );
         $filters = array('recordKeywordSearch' => true);
-		
+
         $reportToken = \RightNow\Utils\Framework::createToken($this->data['attrs']['report_id']);
 
         \RightNow\Utils\Url::setFiltersFromAttributesAndUrl($this->data['attrs'], $filters);
-	   
+
 	    #################################################################################################
 	    #########################Implementing Filter Functionality ######################################
 	    #################################################################################################
 		if($this->CI->session->getSessionData('incident_order_by')):
         $col_order=explode("_",$this->CI->session->getSessionData('incident_order_by'));
 	    $col_id=(int)$col_order[0];
-		$sort_order=($col_order[1])?(int)$col_order[1]:null;		
+		$sort_order=($col_order[1])?(int)$col_order[1]:null;
 		$sort_dir=(int)$this->CI->session->getSessionData('incident_sort_by');
-	    $filters=$this->CI->model('custom/ReportCustomModel')->setSortArgsColumn($filters,$col_id,$sort_order,$sort_dir);  
+	    $filters=$this->CI->model('custom/ReportCustomModel')->setSortArgsColumn($filters,$col_id,$sort_order,$sort_dir);
 		endif;
-		
+
         $results = $this->CI->model('custom/ReportCustomModel')->getDataHTML($this->data['attrs']['report_id'], $reportToken, $filters, $format)->result;
         if($_GET['debug']=="pre")
         $this->freeBugger($results['headers']);
-		
+
         if ($results['error'] !== null) {
             echo $this->reportError($results['error']);
         }

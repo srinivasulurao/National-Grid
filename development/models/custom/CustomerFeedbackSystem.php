@@ -38,7 +38,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
             $view_page=(int)substr_count($_SERVER['REQUEST_URI'],"view");
             $edit_page=(int)substr_count($_SERVER['REQUEST_URI'],"update");
- 
+
             if($incident_c_id!=$profile_c_id && $edit_page){
                 @header("Location:/app/error/error_id/4");
             }
@@ -1351,8 +1351,11 @@ public function setInvestigationClosureModel($data,$i_id){
 			endif;
 			if($formData['Incident.CustomFields.c.root_cause_category']->value)
 			$incident->CustomFields->c->root_cause_category=(int)$formData['Incident.CustomFields.c.root_cause_category']->value;
-			//Also change the status to closed.
-            $incident->StatusWithType->Status=2; //Incident Closed.
+			//Also change the status to closed,//Investigation Incident Closed.
+      $incident->StatusWithType->Status=2;
+      $incident->CustomFields->c->complaint_resolved=1;
+      //Close the parent Incident as well.
+      $this->closeParentIncident($i_id);
 
             $incident->save(RNCPHP\RNObject::SuppressAll);
             RNCPHP\ConnectAPI::commit();
@@ -1371,6 +1374,16 @@ public function setInvestigationClosureModel($data,$i_id){
 
 }
 
+private function closeParentIncident($i_id){
+  $parent_id=$this->getParentIncidentId($i_id);
+  $incident = RNCPHP\Incident::fetch($parent_id);
+  $incident->StatusWithType->Status=2;
+  $incident->CustomFields->c->complaint_resolved=1;
+  $incident->save(RNCPHP\RNObject::SuppressAll);
+  RNCPHP\ConnectAPI::commit();
+  
+}
+
 function getStatusIdByStatusName($searchtext){
 	$incidents = RNCPHP\Incident::find("StatusWithType.Status.Name LIKE '%$searchtext%'" );
 		foreach ($incidents as $incident)
@@ -1381,6 +1394,23 @@ function getStatusIdByStatusName($searchtext){
 		}
 
 		return 0;
+}
+
+function getIncidentStatusListModel(){
+  $statusList=array();
+  $query=RNCPHP\ROQL::queryObject("SELECT Incident from Incident")->next();
+  while($result=$query->next()):
+    $statusList[$result->StatusWithType->Status->ID]=$result->StatusWithType->Status->LookupName;
+  endwhile;
+  return $statusList;
+}
+
+function getActionItemListModel(){
+  $query=RNCPHP\ROQL::queryObject("SELECT CFS.ActionItemStatus from CFS.ActionItemStatus")->next();
+  while($result=$query->next()):
+    $statusList[$result->ID]=$result->LookupName;
+  endwhile;
+  return $statusList;
 }
 
 function deliveryFind($delivery_no, $sold_to_customer_name){

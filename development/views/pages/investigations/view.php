@@ -25,7 +25,8 @@ font-weight:bold;
 <div class="rn_PageContent rn_AskQuestion rn_Container">
 
         <div id="rn_ErrorLocation"></div>
-                <rn:widget path="output/DataDisplay"  name="Incident.ref_no" default_value="3" required="true" />
+                <rn:widget path="output/DataDisplay"  name="Incident.ref_no" default_value="3" required="true" label="Reference No."/>
+                <rn:widget path="output/FieldDisplay"  name="Incident.Subject" default_value="" label_input="Subject" required="true" />
                 <rn:widget path="output/FieldDisplay"  name="Incident.PrimaryContact.LookupName" label='Contact Name' />
                 <rn:widget path="output/DataDisplay"  name="Incident.c$complaint_type" default_value="3" required="true" />
                 <!--
@@ -42,17 +43,15 @@ font-weight:bold;
                 <rn:widget path="custom/investigations/ChildInvestigations" />
               -->
                 <rn:widget path="custom/investigations/correctiveActions"  task="view"/>
-                <rn:widget path="output/FieldDisplay"  name="Incident.c$was_there_a_problem" default_value=""  required="true"/>
-                <rn:widget path="output/FieldDisplay"  name="Incident.c$why1" default_value=""  required="true"/>
-                <rn:widget path="output/FieldDisplay"  name="Incident.c$why2" default_value=""  required="true"/>
-                <rn:widget path="output/FieldDisplay"  name="Incident.c$why3" default_value=""  required="true"/>
-                <rn:widget path="output/FieldDisplay"  name="Incident.c$why4" default_value=""  required="true"/>
-                <rn:widget path="output/FieldDisplay"  name="Incident.c$why5" default_value=""  required="true"/>
-
-                <rn:widget path="output/FieldDisplay"  name="Incident.Subject" default_value="" label_input="Subject" required="true" />
-                <rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" label_input="<b>Threads</b>"/>
+                <rn:widget path="output/FieldDisplay"  name="Incident.c$was_there_a_problem" />
+                <rn:widget path="output/FieldDisplay"  name="Incident.c$why1" />
+                <rn:widget path="output/FieldDisplay"  name="Incident.c$why2" />
+                <rn:widget path="output/FieldDisplay"  name="Incident.c$why3"  />
+                <rn:widget path="output/FieldDisplay"  name="Incident.c$why4"  />
+                <rn:widget path="output/FieldDisplay"  name="Incident.c$why5"  />
+                <rn:widget path="output/FieldDisplay"  name="Incident.c$root_cause_category"  />
+                <rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" label="Comments"/>
                 <rn:widget path="output/FileListDisplay"  name="Incident.fattach" />
-
                 <div style='clear:both'></div><br>
                 <a href='/app/investigations/update/i_id/<?php echo getUrlParm('i_id'); ?>' class='btn primary_button' >Edit</a>
 

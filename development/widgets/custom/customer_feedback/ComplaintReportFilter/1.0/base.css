@@ -2,5 +2,6 @@
  * base.css: Base CSS for ComplaintReportFilter
  */
 .rn_ComplaintReportFilter {
-
+width:175px;
+display:inline-block;
 }

@@ -3,3 +3,8 @@ requires:
   jsModule:
   - standard
   - mobile
+  extends:
+    widget: standard/reports/Multiline
+    components:
+    - php
+    overrideViewAndLogic: "true"

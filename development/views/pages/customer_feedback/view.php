@@ -37,7 +37,7 @@ font-weight:bold;
                 <rn:widget path="output/FieldDisplay"  name="Incident.c$product_sample_returned_to" default_value=""  required="true"/>
                 <rn:widget path="output/FieldDisplay"  name="Incident.c$request_type" default_value="" label_input="Request Type"/>
                 <rn:widget path="output/FieldDisplay"  name="Incident.Subject" default_value="" label_input="Subject" required="true" />
-                <rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" label_input="<b>Threads</b>"/>
+                <rn:widget path="output/IncidentThreadDisplay" name="Incident.Threads" label="Comments"/>
                 <rn:widget path="output/FieldDisplay"  name="Incident.c$target_date" label_input="Target Date" required="true"/>
                 <rn:widget path="output/FieldDisplay"  name="Incident.c$sold_to_customer_name" default_value="" label_input="Sold to Customer Name" required="true" />
                 <rn:widget path="output/FileListDisplay"  name="Incident.fattach" />
