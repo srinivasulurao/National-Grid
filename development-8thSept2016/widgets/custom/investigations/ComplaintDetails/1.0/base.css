@@ -1,0 +1,102 @@
+/**
+ * base.css: Base CSS for ComplaintDetails
+ */
+.rn_ComplaintDetails {
+
+}
+
+.tabs{
+    background: white none repeat scroll 0 0;
+    border: 1px solid lightgrey;
+    border-radius: 0;
+    color: black;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    margin-right: -6px;
+    padding: 5px;
+    text-align: center;
+    width: 100px;
+    border-bottom:0px;
+	}
+
+
+	.tab_playground{
+    -webkit-animation: fadeEffect 1s;
+    animation: fadeEffect 1s; /* Fading effect takes 1 second */
+     }
+
+	.tab-active,.tabs:hover{
+		background:-webkit-gradient(linear,left top,left bottom,color-stop(0,#f4f0ec),color-stop(100%,#d6d2ce)) !important;
+		background:rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #f4f0ec 0px, #d6d2ce 100%) repeat scroll 0 0;
+	}
+
+  .rn_ThreadHeader,.rn_ThreadContent{
+    width:100% !important;
+  }
+
+	.inv-div{
+		display:block;
+		clear:both;
+		border: 1px solid lightgrey;
+		padding: 10px;
+		min-height: 200px;
+	}
+
+	.inv-div table td,.inv-div table th{
+		padding:8px;
+		font-size:12px;
+
+	}
+
+	.inv-div th{
+		background:black;
+		color:white;
+	}
+
+
+	#thread_display label{
+		padding:10px;
+		background:black;
+		color:white;
+		font-size:20px;
+		margin-top:20px;
+    margin-bottom: 0px;
+	}
+
+
+	.fileAttachment li{
+		list-style: none !important;
+    padding:10px;
+    padding-left:0;
+	}
+
+  #thread_display ul li{
+    display: block;
+    background: none !important;
+    margin-left: 10px;
+    float: none !important;
+    border-bottom: 1px dashed lightgrey;
+    margin-right: 10px;
+  }
+
+  #thread_display ul li:nth-last-child(1){
+    border-bottom: 0;
+  }
+
+  .rn_FileListDisplay ul,.fileAttachment{
+    background: #F6FBFB !important;
+    border: 1px solid lightgrey;
+    width: 99% !important;
+  }
+
+  .fileAttachment{
+	 width:100% !important;
+	}
+
+  .rn_ThreadHeader, .rn_ThreadContent{
+    width:99% !important;
+  }
+  .rn_CustomThreadDisplay .rn_Output{
+    width:101% !important;
+  }

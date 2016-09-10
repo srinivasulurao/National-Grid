@@ -29,10 +29,10 @@
 
 									<button type='button' id='add_tca' class='btn info_button'> + Add</button>
 									<form method='action' id='add_corrective_action' style='display:none' onsubmit="return false;">
-										<label>Details</label>
+										<label>Details <i style='font-size:12px;font-weight:500;letter-spacing:0px'>(Only 255 Characters Allowed)</i></label>
 										<input type='text' id='corrective_actions_details' required="required">
-										<label>Description</label>
-										<input type='text' id='corrective_actions_description' required="required">
+										<label>Description <i style='font-size:12px;font-weight:500;letter-spacing:0px'>(Only 255 Characters Allowed)</i></label>
+										<input type='text' id='corrective_actions_description' required="required" maxlength='255'>
 										<label>Complete</label>
 										<select id='corrective_actions_complete' onchange="disable_enable_completion_date(); addPresentDate()">
 											<option value='0'>No</option>

@@ -17,6 +17,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             	Y.one('#add_corrective_action').toggleView();
             	add_button_text=document.getElementById('add_tca').innerText;
             	if(add_button_text=="+ Add"){
+              document.getElementById('corrective_actions_edit_id').value="";
             	add_tca.setContent("- Hide");
             	}
             	else{
@@ -29,7 +30,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
 
 
 
-            //Submit Corrective Action.
+            //Submit & edit Corrective Action.
 
             sca=Y.one("#add_corrective_action");
             sca.on("submit",function (e){
@@ -40,62 +41,32 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             	var due_date=document.getElementById('corrective_actions_due_date').value;
             	var completion_date=document.getElementById('corrective_actions_completion_date').value;
             	var i_id=document.getElementById('corrective_actions_iid').value;
-            	//dialog.show();
+              var edit_id=document.getElementById('corrective_actions_edit_id').value;
+              var action=(edit_id)?"editCorrectiveAction":"addCorrectiveAction";
 
-            	queryString="detail="+detail+"&description="+description+"&complete="+complete+"&due_date="+due_date+"&completion_date="+completion_date+"&i_id="+i_id;
+                RightNow.Ajax.makeRequest("/cc/customerFeedbackSystem/"+action,{detail:detail,description:description,complete:complete,due_date:due_date,completion_date:completion_date,i_id:i_id,edit_id:edit_id},{
+                      successHandler: function (response) {
 
-            	var xhttp=new XMLHttpRequest();
-                xhttp.open("GET", "/cc/customerFeedbackSystem/addCorrectiveAction/?"+queryString, false);
-                xhttp.send();
-                document.getElementById('correctiveActionList').innerHTML=xhttp.responseText;
+                          if(response.responseText!=""){
+                              document.getElementById('correctiveActionList').innerHTML=response.responseText;
+                              document.getElementById('corrective_actions_details').value="";
+                             	document.getElementById('corrective_actions_description').value="";
+                             	document.getElementById('corrective_actions_complete').value="";
+                             	document.getElementById('corrective_actions_due_date').value="";
+                             	document.getElementById('corrective_actions_completion_date').value="";
 
-            	document.getElementById('corrective_actions_details').value="";
-            	document.getElementById('corrective_actions_description').value="";
-            	document.getElementById('corrective_actions_complete').value="";
-            	document.getElementById('corrective_actions_due_date').value="";
-            	document.getElementById('corrective_actions_completion_date').value="";
+                             	Y.one('#add_corrective_action').toggleView();
+                             	add_tca.setContent("+ Add");
+                             	updateCountStatus();
+                          }
 
-
-            	Y.one('#add_corrective_action').toggleView();
-            	add_tca.setContent("+ Add");
-            	updateCountStatus();
-
+                      },
+                      async:false,
+                      scope: this,
+                      json: false,
+                      type: "POST"
+                  });
             });
-
-            //Edit Corrective Action
-
-            eda=Y.one("#editCorrectiveAction");
-            eda.on("click",function (e){
-
-            	var detail=document.getElementById('corrective_actions_details').value;
-            	var description=document.getElementById('corrective_actions_description').value;
-            	var complete=document.getElementById('corrective_actions_complete').value;
-            	var due_date=document.getElementById('corrective_actions_due_date').value;
-            	var completion_date=document.getElementById('corrective_actions_completion_date').value;
-            	var i_id=document.getElementById('corrective_actions_iid').value;
-            	var edit_id=document.getElementById('corrective_actions_edit_id').value;
-            	//dialog.show();
-
-            	queryString="detail="+detail+"&description="+description+"&complete="+complete+"&due_date="+due_date+"&completion_date="+completion_date+"&i_id="+i_id+"&edit_id="+edit_id;
-
-            	var xhttp=new XMLHttpRequest();
-                xhttp.open("GET", "/cc/customerFeedbackSystem/editCorrectiveAction/?"+queryString, false);
-                xhttp.send();
-                document.getElementById('correctiveActionList').innerHTML=xhttp.responseText;
-
-            	document.getElementById('corrective_actions_details').value="";
-            	document.getElementById('corrective_actions_description').value="";
-            	document.getElementById('corrective_actions_complete').value="";
-            	document.getElementById('corrective_actions_due_date').value="";
-            	document.getElementById('corrective_actions_completion_date').value="";
-
-
-            	Y.one('#add_corrective_action').toggleView();
-            	add_tca.setContent("+ Add");
-            	updateCountStatus();
-
-            });
-
 
             //Delete Corrective Actions
             dca=Y.one("#delete_corrective_actions");
@@ -218,7 +189,6 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
             		if(document.getElementsByClassName('corrective_action_checkbox')[i].checked==true){
             		ca=document.getElementsByClassName('corrective_action_checkbox')[i].id;
             		j++;
-            		break;
             		}
             	}
 
@@ -242,7 +212,7 @@ Custom.Widgets.investigations.CorrectiveActions = RightNow.Widgets.extend({
 		                           add_tca.setContent("- Hide");
 		                           Y.one(".lpw").hide(true);
 		                           document.getElementById('submitCorrectiveAction').style.display="none";
-	                               document.getElementById('editCorrectiveAction').style.display="block";
+	                             document.getElementById('editCorrectiveAction').style.display="block";
 		                        }
 
 		                    },

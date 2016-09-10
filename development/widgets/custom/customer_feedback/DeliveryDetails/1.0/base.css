@@ -4,3 +4,11 @@
 .rn_DeliveryDetails {
 
 }
+
+.delivery_col_header,.delivery_col_value{
+  width:50%;
+  display: inline-block;
+  border-bottom: 1px solid lightgrey;
+  padding:10px;
+  vertical-align: bottom;
+}

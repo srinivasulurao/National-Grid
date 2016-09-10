@@ -45,6 +45,7 @@ font-weight:bold;
                 <rn:widget path="output/FieldDisplay"  name="Incident.c$target_date" label_input="Target Date" required="true"/>
                 <rn:widget path="output/FieldDisplay"  name="Incident.c$sold_to_customer_name" default_value="" label_input="Sold to Customer Name" required="true" />
                 <rn:widget path="output/FileListDisplay"  name="Incident.fattach" />
+                <rn:widget path="custom/investigations/ChildInvestigations" />
                 <div style='clear:both'></div><br>
 				<a href='/app/supplier_feedback/update/i_id/<?php echo getUrlParm('i_id'); ?>' class='btn primary_button' >Edit</a>
 

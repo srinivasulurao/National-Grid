@@ -20,14 +20,16 @@ $dt->setTimeStamp($thirty_days_off);
 
 <script>
   var yahoo_yui=YUI();
-   yahoo_yui.use('calendar', 'datatype-date', 'cssbutton', function (G) { 
+   yahoo_yui.use('calendar', 'datatype-date', 'cssbutton', function (G) {
+      minimum_date=document.getElementById('minimum_date_yui').value;
 
       calendar = new G.Calendar({
       contentBox: "#yahoo-calendar",
       width:'340px',
       showPrevMonth: false,
       showNextMonth: true,
-      minimumDate: new Date(document.getElementById('minimum_date_yui').value)     
+      minimumDate: new Date(minimum_date),
+      date:new Date(minimum_date.split(",").join("/"))
      }).render();
 
        var dtdate = G.DataType.Date;
@@ -37,11 +39,11 @@ $dt->setTimeStamp($thirty_days_off);
        G.one("#yahoo-calendar").toggleView();
     });
 
-    G.all("#toggleCalendar,.yahoo_date_selected").on('click', function (ev) {
+    G.one("#toggleCalendar").on('click', function (ev) {
       G.one('#yahoo-calendar').toggleView();
       ev.preventDefault();
       calendar.set('showPrevMonth', !(calendar.get("showPrevMonth")));
     });
 
-}); // G use ends here. 
+}); // G use ends here.
 </script>
