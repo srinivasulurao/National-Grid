@@ -14,14 +14,14 @@ class customFileDisplay extends \RightNow\Libraries\Widget\Base
 	   $attachments=$ci->model('custom/CustomerFeedbackSystem')->getActionItemAttachment($id);
 	   $this->data['attachments']=$attachments;
 	   endif;
-	   
+
 	   if($this->attrs['type']->value=="parent_incident"):
 	   $i_id=getUrlParm('i_id');
-	   $parent_id=$ci->model('custom/CustomerFeedbackSystem')->getParentIncidentId($i_id); 	   
+	   $parent_id=$ci->model('custom/CustomerFeedbackSystem')->getParentIncidentId($i_id);
 	   $attachments=$ci->model('custom/CustomerFeedbackSystem')->getIncident($parent_id)->FileAttachments;
 	   $this->data['attachments']=$attachments;
 	   endif;
-	   
+
         return parent::getData();
 
     }

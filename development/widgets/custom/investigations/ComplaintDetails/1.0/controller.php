@@ -6,6 +6,8 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 
     function __construct($attrs) {
     	$this->ci_instance=&get_instance();
+			//Change the status of the investigation if any corrective action is pending.
+	    $this->ci_instance->model('custom/CustomerFeedbackSystem')->changeCorrectiveInvestigationStatus(getUrlParm('i_id'));
         parent::__construct($attrs);
     }
 
@@ -29,7 +31,7 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 
 		$displayParams['Complaint No']=$incident->LookupName;
 		$displayParams['Subject']=$incident->Subject;
-		$displayParams['Status']=$incident->StatusWithType->StatusType->LookupName;
+		$displayParams['Status']=$incident->StatusWithType->Status->LookupName;
 		$displayParams['Source']=$incident->Source->LookupName;
 		$displayParams['Assigned To']=$incident->AssignedTo->LookupName;
 		$displayParams['Created On']=date("Y-m-d H:i A",$incident->CreatedTime);
@@ -47,7 +49,7 @@ class ComplaintDetails extends \RightNow\Libraries\Widget\Base {
 		$incident=$this->ci_instance->model('custom/CustomerFeedbackSystem')->investigationDetails($i_id);
 		$displayParams['Investigation Reference No.']=$incident->LookupName;
 		$displayParams['Subject']=$incident->Subject;
-		$displayParams['Status']=$incident->StatusWithType->StatusType->LookupName;
+		$displayParams['Status']=$incident->StatusWithType->Status->LookupName;
 		$displayParams['Source']=$incident->Source->LookupName;
 		$displayParams['Assigned To']=$incident->AssignedTo->LookupName;
 		$displayParams['Created On']=date("Y-m-d H:i A",$incident->CreatedTime);

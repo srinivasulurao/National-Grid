@@ -14,7 +14,7 @@ foreach($this->data['child_investigations'] as $ci):
 endforeach;
 }
 else
-  $html.="<tr><td colspan='6' style='color:red;padding-left:10px'>Sorry, No Investigation has been started for this complaint !</td></tr>";
+  $html.="<tr><td colspan='6' style='color:red;padding-left:10px'>Sorry, no investigation has been started for this complaint.</td></tr>"; 
   $html.="</table>";
 ?>
 <?php echo $html; ?>

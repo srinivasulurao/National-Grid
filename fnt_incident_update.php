@@ -194,7 +194,7 @@ if ($ADD_FATTACH_ENABLED)
 		    $fattach->ContentType = $p_fattach_type;
 		    $fattach->setFile($p_fattach_tmpname);
 		    $fattach->FileName = $p_fattach;
-		    $fattach->Private = true; //always make them private
+		    $fattach->Private = false; //Client don't want the attachment to be private.
 		    $incident->FileAttachments[] = $fattach;
 
 			if($incident->save(RNCPHP\RNObject::SuppressAll)) {
@@ -534,7 +534,7 @@ Add Comments
 
 <div>
 <a name='message'></a>Your Message
-    <textarea name="p_response" id="p_response" style="width: 100%;font-family: arial; font-size: 14px; border: 1px solid grey; padding: 5px;" rows="8" wrap><?=$p_response?></textarea>
+    <textarea value='<?php echo $_POST['p_response']; ?>' name="p_response" id="p_response" style="width: 100%;font-family: arial; font-size: 14px; border: 1px solid grey; padding: 5px;" rows="8" wrap><?=$p_response?></textarea>
 </div>
 
 <!-- Submit ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>- -->

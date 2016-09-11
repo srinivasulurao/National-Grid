@@ -49,7 +49,7 @@
                 $counter++;
                 endfor;
 				if(!$counter)
-				echo "<tr><td colspan='7' style='color:red'>Sorry,No Data found!</td></tr>";
+				echo "<tr><td colspan='7' style='color:red'>Sorry, no data found!</td></tr>";
 				?>
 				</table>
 			</div>

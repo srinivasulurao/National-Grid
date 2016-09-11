@@ -711,15 +711,15 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             $sql.=") ";
             $sql=str_replace("( OR","( ",$sql);
 
-            $sql_instance = RNCPHP\ROQL::query($sql." LIMIT 0,10")->next();
+            $sql_instance = RNCPHP\ROQL::query($sql." ORDER BY CFS.Delivery.DeliveryGoodsIssueDate LIMIT 0,10")->next();
             $data="";
             $counter=0;
             while($delivery = $sql_instance->next())
             {
-                $data.="<div style='border-bottom:1px solid lightgrey;'><span class='deliverable_span' style='font-size:12px;display:inline-block'><a href='javascript:void(0)' onclick=\"setDelivery('{$delivery['Delivery']}','{$delivery['SoldToCustomerName']}')\">{$delivery['Delivery']}</a></span><span class='deliverable_span'>{$delivery['SoldToCustomerName']}</span><span class='deliverable_span'>{$delivery['ShipToCustomerName']}</span><span class='deliverable_span' style='width:28% !important'>{$delivery['DeliveryGoodsIssueDate']}</span></div>";
+                $data.="<div style='border-bottom:1px solid lightgrey;'><span class='deliverable_span' style='font-size:12px;display:inline-block'><a href='javascript:void(0)' onclick=\"setDelivery('{$delivery['Delivery']}','{$delivery['SoldToCustomerName']}')\">{$delivery['Delivery']}</a></span><span class='deliverable_span'>{$delivery['SoldToCustomerName']}</span><span class='deliverable_span'>{$delivery['ShipToCustomerName']}</span><span class='deliverable_span' style='width:28% !important'>{$delivery['MaterialDescription']}</span><span class='deliverable_span'>{$delivery['DeliveryGoodsIssueDate']}</span></div>";
                 $counter++;
             }
-            echo ($counter)?"<h3 style='display:block;width:100%;margin-bottom:10px;'><u>Deliveries</u></h3><span class='deliverable_span dblue'>Delivery</span><span class='deliverable_span dblue'>Sold To</span><span class='deliverable_span dblue'>Ship To</span><span class='deliverable_span dblue' style='width:28% !important'>Delivery Date</span><br>".$data:"No Results found!";
+            echo ($counter)?"<h3 style='display:block;width:100%;margin-bottom:10px;'><u>Deliveries</u></h3><span class='deliverable_span dblue'>Delivery</span><span class='deliverable_span dblue'>Sold To</span><span class='deliverable_span dblue'>Ship To</span><span  class='deliverable_span dblue' style='width:28% !important'>Material Description</span><span class='deliverable_span dblue' >Delivery Date</span><br>".$data:"No Results found!";
         endif;
 
     }
@@ -761,17 +761,17 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
     function getDeliveryDetailsData($delivery_no){
         $data="";
         if($delivery_no){
-            $sql="select * from CFS.Delivery WHERE CFS.Delivery.Delivery='$delivery_no'";
+            $sql="select * from CFS.Delivery WHERE CFS.Delivery.Delivery='$delivery_no' LIMIT 0,10";
             $sql_instance = RNCPHP\ROQL::query($sql)->next();
             $data="";
             while($delivery = $sql_instance->next())
             {
                 $sold_to_customer_name=($delivery['SoldToCustomerName'])?$delivery['SoldToCustomerName']:$delivery['SoldToCustomerRegion'];
-                $data.="<tr><td>{$sold_to_customer_name}</td><td>{$delivery['ShipToCustomerName']}</td><td>{$delivery['DeliveryLineItem']}</td></tr>";
+                $data.="<tr><td>{$delivery['Delivery']}</td><td>{$delivery['SoldToCustomerName']}</td><td>{$delivery['ShipToCustomerName']}</td><td>{$delivery['MaterialDescription']}</td><td>{$delivery['DeliveryGoodsIssueDate']}</td></tr>";
             }
         }
 
-        echo ($data)?"<table width='100%' class='delivery_details_table'><tr><th>Sold To Customer Name</th><th>Ship To Customer Name</th><th>Product</th></tr>".$data."</table>":"Sorry, No results found !";
+        echo ($data)?"<table width='100%' class='delivery_details_table'><tr><th>Delivery</th><th>Sold To</th><th>Ship To</th><th style='width:30%'>Material Description</th><th>Delivery Date</th></tr>".$data."</table>":"Sorry, no results found !";
     }
 
     /* Create action item */
@@ -854,6 +854,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $Action_item->CompletionDate=$completion_date;
                 $duedate=strtotime($formData['DueDate']->value);
                 $Action_item->DueDate = $duedate;
+
                 $Action_item->Priority = intval($formData['Priority']->value);
                 $Action_item->Status = intval($formData['Status']->value);
                 $Action_item->Product = intval($formData['Incident.Product']->value);
@@ -1177,6 +1178,23 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 	return $correctiveActions;
   }
 
+  /*Change the status of the investigation if any of the correctiveActions are remaining.
+  */
+  function changeCorrectiveInvestigationStatus($i_id){
+
+     $ca=RNCPHP\ROQL::query("SELECT count(*) as total from CFS.CorrectiveAction WHERE CFS.CorrectiveAction.Complete='0' AND CFS.CorrectiveAction.Incident='$i_id'")->next();
+     while($result=$ca->next()){
+       $total=$result['total'];
+       break;
+     }
+     if($total){
+     $investigation=RNCPHP\Incident::fetch($i_id);
+     $status_id=$this->getStatusIdByStatusName('Resolved');
+     $investigation->StatusWithType->Status=$status_id;
+     $investigation->save();
+     }
+  }
+
   public function changeStatusCorrectiveActionsModel($caid,$status_id){
   	foreach($caid as $ca):
   	$ca_roql=RNCPHP\ROQL::queryObject("SELECT CFS.CorrectiveAction FROM CFS.CorrectiveAction WHERE CFS.CorrectiveAction.ID='$ca'")->next();
@@ -1200,6 +1218,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 	$this->getCorrectiveActionsHTML($i_id);
   }
   public function getCorrectiveActionsHTML($i_id){
+    $this->changeCorrectiveInvestigationStatus($i_id);
   	$correctiveActions=$this->fetchCorrectiveActionsModel($i_id);
 	$html="";
 	$html="<table style='width:100%' class='actiontable'><tr><th><input type='checkbox' id='centralCheck' onclick=\"centralCheck()\"></th><th>Description</th><th>Created</th><th>Due Date</th><th>Completed</th></tr>";

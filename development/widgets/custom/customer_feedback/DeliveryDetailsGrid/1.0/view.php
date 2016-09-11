@@ -18,11 +18,12 @@
 #delivery_details_obj_grid{
     border: 4px solid black;
     background: white;
-    padding: 10px;
-    width: 350px;
+    padding: 3px;
+    width: 550px;
     position: absolute;
     z-index: 501;
     border-radius: 4px;
     display:none;
+    right:14.2%;
 }
 </style>

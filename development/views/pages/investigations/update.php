@@ -13,7 +13,7 @@
 </div>
 
 <div class="rn_PageContent rn_AskQuestion rn_Container investigations">
-	<a href='/app/customer_feedback/investigations/list' style='float:right' class='link_button'>Back</a>
+	<a href='/app/investigations/list' style='float:right' class='link_button'>Back</a>
 	<h1>Complaint Details <span id='plus_minus1' onclick='playToggle(1)'>+</span></h1>
     <div class='collapsible-div investigation-playstation-1' style='display:none'><rn:widget path="custom/investigations/ComplaintDetails" /></div>
 

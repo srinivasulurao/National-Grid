@@ -33,10 +33,10 @@
 <?/*
         <rn:widget path="custom/action_items/CBOSelectionInput" name="CFS.ActionItem.Location" required="true" label_input="Please enter Location" required="true"/><br/>
 */?>
-        <rn:widget path="custom/action_items/CBOTextInput" name="CFS.ActionItem.Description" required="true"  label_input="Description" required="true" />
         <rn:widget path="custom/action_items/CBOTextInput" name="CFS.ActionItem.Details" required="true"  label_input="Details" required="true" minimum_length="10" minimum_value="5" textarea="true"/>
+        <rn:widget path="custom/action_items/CBOTextInput" name="CFS.ActionItem.Description" required="true"  label_input="Description" required="true" />
         <rn:widget path="custom/action_items/TypeAheadContactLookup" name="CFS.ActionItem.Contact" required="true"  label_input="Contact" required="true"/>
-        <rn:widget path="custom/action_items/CBOTextInput" name="CFS.ActionItem.ActionGroup"  required="true"  label_input="Action Group" required="true" minimum_length="10" minimum_value="5" textarea="true"/>
+        <rn:widget path="custom/action_items/CBOTextInput" name="CFS.ActionItem.ActionGroup"  required="true"  label_input="Action Group" required="true" textarea="true"/>
 <?/*
         <rn:widget path="custom/action_items/CBOSelectionInput" name="CFS.ActionItem.DueDate" required="true"  label_input="Due Date" required="true"/><br/>
 */?>

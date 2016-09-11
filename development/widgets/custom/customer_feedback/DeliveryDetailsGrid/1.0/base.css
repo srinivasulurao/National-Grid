@@ -4,3 +4,11 @@
 .rn_DeliveryDetailsGrid {
 
 }
+.delivery_details_table{
+  font-size:12px !important;
+}
+.delivery_details_table th{
+  background: black !important;
+  letter-spacing: 0px !important;
+  font-weight: normal !important;
+}

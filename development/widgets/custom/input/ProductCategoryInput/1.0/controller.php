@@ -132,7 +132,7 @@ class ProductCategoryInput extends \RightNow\Widgets\ProductCategoryInput {
 	    {
             // Add in the all values label
             array_unshift($defaultHierMap[0], array('id' => 0, 'label' => $this->data['attrs']['label_all_values']));
-            $this->data['js']['hierData'] = $defaultHierMap;
+            $this->data['js']['hierData'] = ($isProduct)?$this->FilterByOrgId($defaultHierMap):$defaultHierMap;
 	    }
     }
 
@@ -154,9 +154,7 @@ class ProductCategoryInput extends \RightNow\Widgets\ProductCategoryInput {
 		$op_link=$ci->model('custom/CustomerFeedbackSystem')->getProdOrgLinking();
 		$profile=$ci->session->getProfile();
 		$org_id=$profile->org_id->value;
-		//echo "<pre>";
-		//print_r($hierData);
-		//echo "</pre>";
+
 		$hs=sizeof($hierData);
 		$newHierData=array();
     if(sizeof($op_link[$org_id])):
@@ -167,6 +165,16 @@ class ProductCategoryInput extends \RightNow\Widgets\ProductCategoryInput {
     			endforeach;
   		endfor;
   endif;
+
+  // echo "<pre>";
+  // print_r($hierData);
+  // echo "</pre>";
+
+  if(!sizeof($newHierData)){
+    $newHierData=array();
+    $newHierData[0][0]=array('id'=>"","label"=>"No Products Found !");
+  }
+
 		return $newHierData;
     }
 	private function _getFilterList()
