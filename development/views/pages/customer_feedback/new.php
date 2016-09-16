@@ -1,4 +1,4 @@
-<rn:meta title="Add Customer Complaint" template="standard.php" clickstream="customer_complaint_create" login_required="true"/>
+<rn:meta title="Add Customer Feedback" template="standard.php" clickstream="customer_complaint_create" login_required="true"/>
 <style>
 .rn_Label{
 display:block !important;
@@ -28,13 +28,16 @@ display:block !important;
         <rn:widget path="input/SelectionInput"  name="Incident.c$request_type" default_value="1" label_input="Request Type" required="true" />
 	    <rn:widget path="custom/customer_feedback/DeliveryLookupInput"  name="Incident.CFS$Delivery" label_input='Delivery' required="true" />
 	    <rn:widget path="custom/customer_feedback/DeliveryDetailsGrid">
-        <rn:widget path="input/TextInput"  name="Incident.c$sold_to_customer_name" default_value="" label_input="Sold to Customer Name" required="true" />
+      <rn:widget path="input/TextInput"  name="Incident.c$sold_to_customer_name" default_value="" label_input="Sold to Customer Name" required="true" />
+      <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_name" default_value="" label_input="Customer Contact Name" />
+      <rn:widget path="input/TextInput"  name="Incident.c$customer_ph_no" default_value="" label_input="Customer Phone Number" />
+      <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_email" default_value="" label_input="Customer Contact Email" />
         <span id='sold_to_customer_suggestions'></span>
         <!--<rn:widget path="input/TextInput"  name="Incident.c$ship_to_customer_name" default_value="" label_input="Ship to Customer Name" required="true" />
         <span id='ship_to_customer_suggestions'></span>-->
 <!--         <rn:widget path="input/TextInput"  name="Incident.c$product_no" default_value="" label_input="Product Number" required="true" /> -->
         <span id='product_number_suggestions'></span>
-	    <rn:widget path="custom/input/ProductCategoryInput" name="Incident.Product" label_input="Product Line" default_value="" required="true" only_display="" />
+	    <rn:widget path="custom/input/ProductCategoryInput" name="Incident.Product" label_input="Product Line" default_value="" required="true" />
  	    <span class='prod_cat_sel'><rn:widget path="input/ProductCategoryInput"  name="Incident.Category" default_value="" required="true" /></span>
 	    <rn:widget path="custom/customer_feedback/DeliveryProductSelection" required="true">
 	    <span id='product_related_fields' style='display:none'>
@@ -47,9 +50,7 @@ display:block !important;
         <rn:widget path="custom/customer_feedback/DatePickerInput"  name="Incident.c$target_date" label_input="Target Date" required="true"/>
         <rn:widget path="input/SelectionInput"  name="Incident.c$formal_response" label_input="Formal Response" default_value='0' required="true"/>
         <rn:widget path="input/SelectionInput"  name="Incident.c$draft" default_value="0"  label_input="Save as Draft"/>
-        <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_name" default_value="" label_input="Customer Contact Name" />
-        <rn:widget path="input/TextInput"  name="Incident.c$customer_ph_no" default_value="" label_input="Customer Phone Number" />
-        <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_email" default_value="" label_input="Customer Contact Email" />
+
         <rn:widget path="input/FileAttachmentUpload"  />
         <rn:widget path="custom/customer_feedback/FormFunctionalityProvider" /> <br>
 

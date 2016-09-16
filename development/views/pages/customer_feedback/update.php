@@ -1,4 +1,4 @@
-<rn:meta title="Update Customer Complaint" template="standard.php" login_required="true"/>
+<rn:meta title="Update Customer Feedback" template="standard.php" login_required="true"/>
 <style>
     .rn_Label{
         display:block !important;
@@ -39,6 +39,10 @@ $draft_opted=($customer_complaint->CustomFields->c->draft);
                 <rn:widget path="custom/customer_feedback/DeliveryLookupInput"  name="Incident.CFS$Delivery" label_input='Delivery' required="true"/>
                 <rn:widget path="custom/customer_feedback/DeliveryDetailsGrid">
                 <rn:widget path="input/TextInput"  name="Incident.c$sold_to_customer_name" default_value="" label_input="Sold to Customer Name" required="true" />
+                <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_name" default_value="" label_input="Customer Contact Name" />
+                <rn:widget path="input/TextInput"  name="Incident.c$customer_ph_no" default_value="" label_input="Customer Phone Number" />
+                <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_email" default_value="" label_input="Customer Contact Email" />
+
                 <span id='sold_to_customer_suggestions'></span>
 <!--                 <rn:widget path="input/TextInput"  name="Incident.c$ship_to_customer_name" default_value="" label_input="Ship to Customer Name" required="true" /> -->
                 <span id='ship_to_customer_suggestions'></span>
@@ -59,10 +63,7 @@ $draft_opted=($customer_complaint->CustomFields->c->draft);
                 <rn:widget path="input/SelectionInput"  name="Incident.c$formal_response" label_input="Formal Response" default_value='0' required="true"/>
                 <?php if($draft_opted): ?><rn:widget path="input/SelectionInput"  name="Incident.c$draft" default_value="0"  label_input="Save as Draft"/><?php endif; ?>
                 <?php if($review_state): ?><rn:widget path='input/SelectionInput' name='Incident.c$complaint_resolved' label_input="Complaint Resolved" /><?php endif; ?>
-                <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_name" default_value="" label_input="Customer Contact Name" />
-                <rn:widget path="input/TextInput"  name="Incident.c$customer_ph_no" default_value="" label_input="Customer Phone Number" />
-                <rn:widget path="input/TextInput"  name="Incident.c$customer_contact_email" default_value="" label_input="Customer Contact Email" />
-
+        
                 <rn:widget path="output/FileListDisplay"  name="Incident.fattach" display_thumbnail="false"/><br>
                 <rn:widget path="input/FileAttachmentUpload"/>
                 <rn:widget path="custom/customer_feedback/FormFunctionalityProvider" /> <br>

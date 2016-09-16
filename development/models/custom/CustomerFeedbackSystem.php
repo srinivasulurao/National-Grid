@@ -275,6 +275,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->supplier_order_number=$formData['Incident.CustomFields.c.supplier_order_number']->value;
                 $incident->CustomFields->c->proposed_solution=$formData['Incident.CustomFields.c.proposed_solution']->value;
                 $duedate=strtotime($formData['c$target_date']->value);
+                if($org_id){
+                  $incident->Organization = RNCPHP\Organization::fetch($org_id);
+                }
                 if($duedate)
                 {
                     $incident->CustomFields->c->target_date=$duedate;
@@ -417,6 +420,8 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
             $profile = $this->CI->session->getProfile();
             $cid=$profile->c_id->value;
+            $org_id=$profile->org_id->value;
+
             $incident = new RNCPHP\Incident();
 
             if($formData['Incident.Subject']->value)
@@ -424,7 +429,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             $incident->PrimaryContact = RNCPHP\Contact::fetch($cid);
             if($formData['Incident.CustomFields.c.complaint_type']->value)
                 $incident->CustomFields->c->complaint_type=intval($formData['Incident.CustomFields.c.complaint_type']->value);
-			if($formData['Incident.Product']->value)
+			     if($formData['Incident.Product']->value)
                 $incident->Product=intval($formData['Incident.Product']->value);
             if($formData['Incident.Category']->value)
                 $incident->Category=intval($formData['Incident.Category']->value);
@@ -449,6 +454,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 //$incident->CustomFields->c->sold_to_customer_name=$delivery['SoldToCustomerName'];
                 $incident->CustomFields->CFS->Delivery=intval($delivery['ID']);
             endif;
+            if($org_id){
+              $incident->Organization = RNCPHP\Organization::fetch($org_id);
+            }
             if($formData['Incident.CustomFields.c.sold_to_customer_name']->value)
                 $incident->CustomFields->c->sold_to_customer_name=$formData['Incident.CustomFields.c.sold_to_customer_name']->value;
             if($formData['Incident.CustomFields.c.ship_to_customer_name']->value)
@@ -711,7 +719,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             $sql.=") ";
             $sql=str_replace("( OR","( ",$sql);
 
-            $sql_instance = RNCPHP\ROQL::query($sql." ORDER BY CFS.Delivery.DeliveryGoodsIssueDate LIMIT 0,10")->next();
+            $sql_instance = RNCPHP\ROQL::query($sql." ORDER BY CFS.Delivery.DeliveryGoodsIssueDate DESC  LIMIT 0,10")->next();
             $data="";
             $counter=0;
             while($delivery = $sql_instance->next())
@@ -753,7 +761,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             }
         endif;
         if($data)
-            $data="<div class='delivery_line_item_list_products'><label id='delivery_line_item_label' style='display:block !important'>Products (Having Issue)</label><table style='width:100%;font-size:10px'><tr style='background:black;color:white'><th>&nbsp &#x2611;</td><th>Item</th><th>Delivery</th><th>Material</th><th>Material Description</th><th>Batch</th><th>Net Weight</th></tr>".$data."</table></div>";
+            $data="<div class='delivery_line_item_list_products'><label id='delivery_line_item_label' style='display:block !important'>Products (Having Issue)</label><table style='width:100%;font-size:14px'><tr style='background:black;color:white'><th>&nbsp<input type='checkbox' id='product_having_issue_checkall' onclick='checkAllProductsHavingIssue()'></td><th>Item</th><th>Delivery</th><th>Material</th><th>Material Description</th><th>Batch</th><th>Net Weight</th></tr>".$data."</table></div>";
         echo $data;
 
     }
@@ -1046,6 +1054,10 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 			$results[]=RNCPHP\CFS\Delivery::fetch($dli->delivery_id);
 		endwhile;
 
+    //We have to show atleast some data to the delivery Details, it can't be emty.
+    if(!sizeof($results)):
+      $results[]=$incident->CustomFields->CFS->Delivery;
+    endif;
 
         return $results;
     }
@@ -1146,6 +1158,17 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 	//return 222;
    }
 
+   public function getChildIncidentIds($i_id){
+
+     $incidents = RNCPHP\ROQl::query("SELECT * FROM Incident WHERE Incident.CustomFields.CFS.Incident='$i_id'")->next();
+     $child_incidents=array();
+   		while($incident=$incidents->next())
+   		{
+      $child_incidents[]=$incident['ID'];
+   		}
+      return (sizeof($child_incidents))?$child_incidents:0;
+   }
+
    public function investigationDetails($i_id){
    	//We have to give the details of the parent incident, as
 	$incident=RNCPHP\Incident::fetch($i_id);
@@ -1226,8 +1249,8 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 	foreach($correctiveActions as $ca):
 		$checkbox="<input type='checkbox' id='{$ca['ID']}' class='corrective_action_checkbox'>";
 		$completed=($ca['Complete'])?"<span class='tick'>&#x2714;</span>":"<span class='untick'>&#x2718;</span>";
-		$created=date("m/d/y h:i A",strtotime($ca['CreatedTime']));
-		$duedate=date("m/d/y h:i A",strtotime($ca['DueDate']));
+		$created=date("m/d/Y",strtotime($ca['CreatedTime']));
+		$duedate=date("m/d/Y",strtotime($ca['DueDate']));
 		$html.="<tr><td>$checkbox</td><td>{$ca['Description']}</td><td>{$created}</td><td>{$duedate}</td><td>$completed</td></tr>";
 		$counter++;
 	endforeach;
@@ -1250,7 +1273,7 @@ public function addCorrectiveActionModel(){
 	if($_POST['description'])
 	$corrective_action->Description=substr($_POST['description'],0,255);
 	if($_POST['detail'])
-	$corrective_action->Details=substr($_POST['detail'],0,255);
+	$corrective_action->Details=substr($_POST['detail'],0,2000);
 	if($_POST['i_id'])
 	$corrective_action->Incident=RNCPHP\Incident::fetch($_POST['i_id']);
 
@@ -1271,7 +1294,7 @@ public function editCorrectiveActionModel(){
 
 	$corrective_action->Description=substr($_POST['description'],0,255);
 
-	$corrective_action->Details=substr($_POST['detail'],0,255);
+	$corrective_action->Details=substr($_POST['detail'],0,2000);
 	if($_POST['i_id'])
 	$corrective_action->Incident=RNCPHP\Incident::fetch($_POST['i_id']);
 
@@ -1393,18 +1416,26 @@ public function setInvestigationClosureModel($data,$i_id){
 
       if($formData['Incident.CustomFields.c.was_there_a_problem']->value)
             $incident->CustomFields->c->was_there_a_problem=$formData['Incident.CustomFields.c.was_there_a_problem']->value;
-			if($formData['Incident.CustomFields.c.why1']->value)
+			if($formData['Incident.CustomFields.c.why1']->value){
             $incident->CustomFields->c->why1=$formData['Incident.CustomFields.c.why1']->value;
-			if($formData['Incident.CustomFields.c.why2']->value)
+            $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.why1']->value;
+          }
+			if($formData['Incident.CustomFields.c.why2']->value){
             $incident->CustomFields->c->why2=$formData['Incident.CustomFields.c.why2']->value;
-			if($formData['Incident.CustomFields.c.why3']->value)
+            $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.why2']->value;
+          }
+			if($formData['Incident.CustomFields.c.why3']->value){
             $incident->CustomFields->c->why3=$formData['Incident.CustomFields.c.why3']->value;
-      if($formData['Incident.CustomFields.c.why4']->value)
+            $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.why3']->value;
+          }
+      if($formData['Incident.CustomFields.c.why4']->value){
             $incident->CustomFields->c->why4=$formData['Incident.CustomFields.c.why4']->value;
-			if($formData['Incident.CustomFields.c.why5']->value):
+            $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.why4']->value;
+          }
+			if($formData['Incident.CustomFields.c.why5']->value){
             $incident->CustomFields->c->why5=$formData['Incident.CustomFields.c.why5']->value;
 		        $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.why5']->value;
-			endif;
+		      }
 			if($formData['Incident.CustomFields.c.root_cause_category']->value)
 			$incident->CustomFields->c->root_cause_category=(int)$formData['Incident.CustomFields.c.root_cause_category']->value;
 			//Also change the status to closed,//Investigation Incident Closed.
@@ -1519,6 +1550,28 @@ function getAllChildIncidents($i_id){
   return $child_incidents;
 }
 
+public function getOrganizationSalesProduct($org_id){
+  $products=RNCPHP\ROQL::query("SELECT * from CFS.OrgToProduct WHERE CFS.OrgToProduct.Organization='$org_id'")->next();
+  $org_products=array();
+  while($result=$products->next()){
+  $org_products[]=$result['ProductID'];
+  }
 
+  return $org_products;
+}
+
+public function getServiceProductList(){
+
+  $products=RNCPHP\ROQL::query("select * from ServiceProduct")->next();
+  $productList=array();
+  $counter=0;
+  while($result=$products->next()):
+    $productList[$counter]['ID']=$result['ID'];
+    $productList[$counter]['LookupName']=$result['LookupName'];
+    $counter++;
+  endwhile;
+
+  return $productList;
+}
 
 } //Class Ends Here !

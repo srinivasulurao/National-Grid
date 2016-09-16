@@ -1,4 +1,4 @@
-<rn:meta title="#rn:msg:QUESTION_SUBMITTED_LBL#" template="standard.php" clickstream="incident_confirm"/>
+<rn:meta title="Feedback Submitted" template="standard.php" clickstream="incident_confirm"/>
 
 <style>
 #customerFeedbackSurvey {
@@ -14,9 +14,10 @@
 </div>
 
 <div class="rn_PageContent rn_AskQuestion rn_Container">
-    <p>
+    <!-- <p>
         Please complete the <a id="customerFeedbackSurvey" class="link_button" href="/ci/documents/detail/1/AvMG~wrpDv8S6Rb~Gv8e~yJFJv8q_aL7FGAcIT7~Pv~V/5/11/12/245cfe1718889dd43ee26d6654e354af8331c668/13/MTQ3MjE0MDAwMQ!!/6/1/7/#rn:url_param_value:i_id#" target="_blank">Risk Rank Survey</a>
-    </p>
+    </p> -->
+    <rn:widget path="custom/investigations/IncidentSurvey" />
     <p>
         Use this reference number for follow up:
         <b>
