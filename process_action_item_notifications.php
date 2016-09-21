@@ -9,16 +9,16 @@ require_once( get_cfg_var("doc_root")."/ConnectPHP/Connect_init.php");
 
 use RightNow\Connect\v1_2 as RNCPHP;
 
-initConnectAPI("SOAP","SoapRNT@786");
+initConnectAPI("FNT_CWS","FNTRocks!");
 
 /*Thirty Days expire date */
-$thirty_day_expire = date('Y-m-d\Z', strtotime("+30 days")); 31
+$thirty_day_expire = date('Y-m-d\Z', strtotime("+30 days"));
 
 /* Seven Days expire date */
-$seven_day_expire = date('Y-m-d\Z', strtotime("+7 days"));   8
+$seven_day_expire = date('Y-m-d\Z', strtotime("+7 days"));
 
 /* One Day expire date */
-$one_day_expire = date('Y-m-d\Z', strtotime("+1 days"));    2
+$one_day_expire = date('Y-m-d\Z', strtotime("+1 days"));
 
 
 

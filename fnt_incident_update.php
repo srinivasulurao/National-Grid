@@ -223,17 +223,17 @@ if($p_response and !$p_fattach) //if they submitted then add the note
 		}else{
 			$extraText = '';
 		}
-      $third_party_email=base64_decode($_GET['p_created']);
+        $third_party_email=base64_decode($_GET['p_created']);
     	$incident->Threads = new RNCPHP\ThreadArray();
     	$incident->Threads[0] = new RNCPHP\Thread();
     	$incident->Threads[0]->EntryType = new RNCPHP\NamedIDOptList();
     	$incident->Threads[0]->EntryType->ID  = 4; //Customer Proxy
-      $incident->Threads[0]->ContentType=new RNCPHP\NamedIDOptList();
-      $incident->Threads[0]->ContentType->ID=2;
-      $question_asked="<span style='color:black;display:inline-block;text-decoration:underline'>".base64_decode($_GET['p_asked_by'])."</span> : ".base64_decode($_GET['p_ques'])."<br>";
+		$incident->Threads[0]->ContentType=new RNCPHP\NamedIDOptList();
+		$incident->Threads[0]->ContentType->ID=2;
+		$question_asked="<span style='color:black;display:inline-block;text-decoration:underline'>".base64_decode($_GET['p_asked_by'])."</span> : ".base64_decode($_GET['p_ques'])."<br>";
     	$incident->Threads[0]->Text =$question_asked."<span style='color:black;display:inline-block;text-decoration:underline'>FNT User</span> : ".$p_response . "<br>* This entry was added by [{$third_party_email}] via forward and track".$extraText; //$p_response is a $_POST variable
-      $incident->StatusWithType->Status->ID = $FNTConfig->statusid_responded;
-      $incident->save();
+        $incident->StatusWithType->Status->ID = $FNTConfig->statusid_responded;
+        $incident->save();
 
     	print("Thank you for submitting your response. You input has been added to this incident. You may close this window.");
 	}

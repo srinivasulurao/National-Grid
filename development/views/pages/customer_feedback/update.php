@@ -27,7 +27,7 @@ $i_id=getUrlParm('i_id');
 $review_id=$ci->model('custom/CustomerFeedbackSystem')->getStatusIdByStatusName("Review");
 $customer_complaint=$ci->model('custom/CustomerFeedbackSystem')->getIncident($i_id);
 $review_state=($review_id==$customer_complaint->StatusWithType->Status->ID)?1:0;
-$draft_opted=($customer_complaint->CustomFields->c->draft);
+$draft_opted=($customer_complaint->CustomFields->c->draft_opted && $customer_complaint->CustomFields->c->draft); 
  ?>
 <div class="rn_PageContent rn_AskQuestion rn_Container">
     <form id="rn_QuestionSubmit" method="post" action="/cc/CustomerFeedbackSystem/updateCustomerComplaintSendForm/<?php echo getUrlParm('i_id'); ?>">
@@ -63,7 +63,7 @@ $draft_opted=($customer_complaint->CustomFields->c->draft);
                 <rn:widget path="input/SelectionInput"  name="Incident.c$formal_response" label_input="Formal Response" default_value='0' required="true"/>
                 <?php if($draft_opted): ?><rn:widget path="input/SelectionInput"  name="Incident.c$draft" default_value="0"  label_input="Save as Draft"/><?php endif; ?>
                 <?php if($review_state): ?><rn:widget path='input/SelectionInput' name='Incident.c$complaint_resolved' label_input="Complaint Resolved" /><?php endif; ?>
-        
+
                 <rn:widget path="output/FileListDisplay"  name="Incident.fattach" display_thumbnail="false"/><br>
                 <rn:widget path="input/FileAttachmentUpload"/>
                 <rn:widget path="custom/customer_feedback/FormFunctionalityProvider" /> <br>

@@ -217,12 +217,13 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
     function  getdatavalues($package,$table,$field,$id)
     {
-
+        if($id):
         $qry = "RightNow\\Connect\\v1_2\\".$package."\\$table";
         $action = $qry ::fetch($id);
         // $action = RNCPHP\CFS\ActionItem::fetch($id);
 
         return $action->$field;
+      endif;
 
     }
 
@@ -310,8 +311,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                     }
                 }
 
-                $incident->save(RNCPHP\RNObject::SuppressAll);
+                $incident->save();
                 RNCPHP\ConnectAPI::commit();
+
                 $arr['result']['transaction']['incident']['key']="i_id";
                 $arr['result']['transaction']['incident']['value']=$incident->ID;
                 $arr['result']['sessionParam']="/";
@@ -391,7 +393,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                     }
                 }
 
-                $incident->save(RNCPHP\RNObject::SuppressAll);
+                $incident->save();
                 RNCPHP\ConnectAPI::commit();
 
                 $arr['result']['transaction']['incident']['key']="i_id";
@@ -441,10 +443,11 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->product_sample_returned_to=$formData['Incident.CustomFields.c.product_sample_returned_to']->value;
             if($formData['Incident.CustomFields.c.request_type']->value)
                 $incident->CustomFields->c->request_type=intval($formData['Incident.CustomFields.c.request_type']->value);
-            if($formData['Incident.CustomFields.c.draft']->value)
+            if($formData['Incident.CustomFields.c.draft']->value):
                 $incident->CustomFields->c->draft=intval($formData['Incident.CustomFields.c.draft']->value);
-            if($formData['Incident.CustomFields.c.draft']->value)
-                $incident->StatusWithType->Status=($formData['Incident.CustomFields.c.draft']->value)?108:0; //Save as a draft option
+                $incident->CustomFields->c->draft_opted=intval($formData['Incident.CustomFields.c.draft']->value);
+                $incident->StatusWithType->Status=108; //Save as a draft option
+            endif;
             if($formData['c$target_date'])
                 $incident->CustomFields->c->target_date=strtotime($formData['c$target_date']->value);
 			      if($formData['Incident.CustomFields.c.formal_response']->value)
@@ -512,51 +515,10 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         return json_encode($arr);
     }
 
-    public function insertIncidentDeliveryLineItems($delivery_line_items,$incident_id){
-        $items=explode(",",$delivery_line_items);
-        foreach($items as $item){
-            if($item):
-                $idli=new RNCPHP\CFS\IncidentDeliveryItem();
-                $idli->Incident=RNCPHP\Incident::fetch($incident_id);
-                $idli->delivery_id=$item;
-                $idli->save();
-            endif;
-        }
-        RNCPHP\ConnectAPI::commit();
-    }
-
-    public function updateIncidentDeliveryLineItems($delivery_line_items,$incident_id){
-
-        //First delete the delivery line items.
-        $items=RNCPHP\ROQL::queryObject("SELECT CFS.IncidentDeliveryItem FROM CFS.IncidentDeliveryItem WHERE CFS.IncidentDeliveryItem.Incident='$incident_id'")->next();
-        while($item=$items->next()) {
-            $item->destroy();
-        }
-        RNCPHP\ConnectAPI::commit();
-
-        //Now insert the delivery line items
-        $this->insertIncidentDeliveryLineItems($delivery_line_items,$incident_id);
-
-    }
-    public function saveIncidentProductSelection($incident_id,$products_selected){
-
-        foreach($products_selected as $delivery):
-            if($delivery):
-                $obj=$rma = new RNCPHP\CFS\IncidentDeliveryItem();
-                $obj->incident_id=$incident_id;
-                $obj->delivery_id=$delivery;
-                $obj->save();
-            endif;
-        endforeach;
-
-    }
-
-
     public function CustomerCompliantUpdate($data,$i_id){
 
         $arr=array();
         $formData = $this->processFields($data, $presentFields);
-
         try{
             $profile = $this->CI->session->getProfile();
             $cid=$profile->c_id->value;
@@ -579,11 +541,12 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->product_sample_returned_to=$formData['Incident.CustomFields.c.product_sample_returned_to']->value;
             if($formData['Incident.CustomFields.c.request_type']->value)
                 $incident->CustomFields->c->request_type=intval($formData['Incident.CustomFields.c.request_type']->value);
-            if($formData['Incident.CustomFields.c.draft']->value)
-                $incident->CustomFields->c->draft=intval($formData['Incident.CustomFields.c.draft']->value);
             if(1):
-                $incident->StatusWithType->Status=($formData['Incident.CustomFields.c.draft']->value)?108:8; //Save as a draft/Updated option
-			endif;
+                $draft_id=$this->getStatusIdByStatusName('draft'); //draft status.
+                $resolved_id=$this->getStatusIdByStatusName('resolved'); //Need assignment status. 
+                $incident->CustomFields->c->draft=intval($formData['Incident.CustomFields.c.draft']->value);
+                $incident->StatusWithType->Status=(intval($formData['Incident.CustomFields.c.draft']->value))?$draft_id:$resolved_id; //Draft.
+            endif;
             if($formData['c$target_date']->value)
                 $incident->CustomFields->c->target_date=strtotime($formData['c$target_date']->value);
 			if($formData['Incident.CustomFields.c.formal_response']->value)
@@ -599,7 +562,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->ship_to_customer_name=$formData['Incident.CustomFields.c.ship_to_customer_name']->value;
             if($formData['Incident.CustomFields.c.product_no']->value)
                 $incident->CustomFields->c->product_no=$formData['Incident.CustomFields.c.product_no']->value;
-            if($formData['Incident.CustomFields.c.delivery_line_items']->value)
+            if(1)
                 $this->updateIncidentDeliveryLineItems($formData['Incident.CustomFields.c.delivery_line_items']->value,$i_id);
             if($formData['Incident.CustomFields.c.complaint_resolved']->value):
             $incident->CustomFields->c->complaint_resolved=(int)$formData['Incident.CustomFields.c.complaint_resolved']->value;
@@ -636,7 +599,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 }
             }
 
-            $incident->save(RNCPHP\RNObject::SuppressAll);
+            $incident->save();
             RNCPHP\ConnectAPI::commit();
 
 
@@ -652,6 +615,50 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         return json_encode($arr);
 
     }
+
+
+    public function insertIncidentDeliveryLineItems($delivery_line_items,$incident_id){
+        $items=explode(",",$delivery_line_items);
+        foreach($items as $item){
+            if($item):
+                $idli=new RNCPHP\CFS\IncidentDeliveryItem();
+                $idli->Incident=RNCPHP\Incident::fetch($incident_id);
+                $idli->delivery_id=$item;
+                $idli->save();
+            endif;
+        }
+        RNCPHP\ConnectAPI::commit();
+    }
+
+    public function updateIncidentDeliveryLineItems($delivery_line_items,$incident_id){
+
+        //First delete the delivery line items.
+        $items=RNCPHP\ROQL::queryObject("SELECT CFS.IncidentDeliveryItem FROM CFS.IncidentDeliveryItem WHERE CFS.IncidentDeliveryItem.Incident='$incident_id'")->next();
+        while($item=$items->next()) {
+            $item->destroy();
+        }
+        RNCPHP\ConnectAPI::commit();
+
+        //Now insert the delivery line items
+        $this->insertIncidentDeliveryLineItems($delivery_line_items,$incident_id);
+
+    }
+    public function saveIncidentProductSelection($incident_id,$products_selected){
+
+        foreach($products_selected as $delivery):
+            if($delivery):
+                $obj=$rma = new RNCPHP\CFS\IncidentDeliveryItem();
+                $obj->incident_id=$incident_id;
+                $obj->delivery_id=$delivery;
+                $obj->save();
+                RNCPHP\ConnectAPI::commit();
+            endif;
+        endforeach;
+
+    }
+
+
+
 
     public function getDelivery($del_id){
         $sql="SELECT * from CFS.Delivery WHERE CFS.Delivery.Delivery='$del_id'";
@@ -821,7 +828,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
                 }
 
-                $response['Res']=$Action_item->save(RNCPHP\RNObject::SuppressAll);
+                $response['Res']=$Action_item->save();
                 RNCPHP\ConnectAPI::commit();
             }
             catch (Exception $err ){
@@ -882,8 +889,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
                 }
                 // print_r($Action_item->FileAttachments); exit;
-                $response->res=$Action_item->save(RNCPHP\RNObject::SuppressAll);
+                $response->res=$Action_item->save();
                 RNCPHP\ConnectAPI::commit();
+
                 $response->id = $Action_item->ID;
             }
             catch (Exception $err ){
@@ -1215,6 +1223,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
      $status_id=$this->getStatusIdByStatusName('Resolved');
      $investigation->StatusWithType->Status=$status_id;
      $investigation->save();
+     RNCPHP\ConnectAPI::commit();
      }
   }
 
@@ -1225,6 +1234,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 	$i_id=$corrective_action->Incident->ID;
 	$corrective_action->Complete=$status_id;
 	$corrective_action->save();
+  RNCPHP\ConnectAPI::commit();
     endforeach;
 
   	$this->getCorrectiveActionsHTML($i_id);
@@ -1241,7 +1251,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 	$this->getCorrectiveActionsHTML($i_id);
   }
   public function getCorrectiveActionsHTML($i_id){
-    $this->changeCorrectiveInvestigationStatus($i_id);
+    //$this->changeCorrectiveInvestigationStatus($i_id);
   	$correctiveActions=$this->fetchCorrectiveActionsModel($i_id);
 	$html="";
 	$html="<table style='width:100%' class='actiontable'><tr><th><input type='checkbox' id='centralCheck' onclick=\"centralCheck()\"></th><th>Description</th><th>Created</th><th>Due Date</th><th>Completed</th></tr>";
@@ -1278,6 +1288,7 @@ public function addCorrectiveActionModel(){
 	$corrective_action->Incident=RNCPHP\Incident::fetch($_POST['i_id']);
 
 	$corrective_action->save();
+  RNCPHP\ConnectAPI::commit();
 
 	$this->getCorrectiveActionsHTML($_POST['i_id']);
 
@@ -1299,6 +1310,7 @@ public function editCorrectiveActionModel(){
 	$corrective_action->Incident=RNCPHP\Incident::fetch($_POST['i_id']);
 
 	$corrective_action->save();
+  RNCPHP\ConnectAPI::commit();
 
 	$this->getCorrectiveActionsHTML($_POST['i_id']);
 }
@@ -1336,8 +1348,8 @@ public function SaveThreadSendMailModel($data,$i_id){
                 }
             }
 
-			$incident->save(RNCPHP\RNObject::SuppressAll);
-            RNCPHP\ConnectAPI::commit();
+			$incident->save();
+      RNCPHP\ConnectAPI::commit();
 
 			//Also the send a mail to the client.
 			$client_mail=$formData['Contact.Emails.PRIMARY.Address']->value;
@@ -1406,6 +1418,12 @@ public function contactLookUpSearchModel($input){
 	}
 
 }
+public function getNonClosedCorrectiveActions($i_id){
+ $investigation_closure=RNCPHP\ROQL::query("select count(*) as total from CFS.CorrectiveAction WHERE Complete='0' AND Incident='$i_id'")->next();
+ while($result=$investigation_closure->next()){
+   return $result['total'];
+ }
+}
 
 public function setInvestigationClosureModel($data,$i_id){
 	$arr=array();
@@ -1413,9 +1431,27 @@ public function setInvestigationClosureModel($data,$i_id){
 
         try{
             $incident = RNCPHP\Incident::fetch($i_id);
-
-      if($formData['Incident.CustomFields.c.was_there_a_problem']->value)
+            $incident->CustomFields->c->was_there_a_problem=(int)$formData['Incident.CustomFields.c.was_there_a_problem']->value;
+      if($formData['Incident.CustomFields.c.was_there_a_problem']->value){
             $incident->CustomFields->c->was_there_a_problem=$formData['Incident.CustomFields.c.was_there_a_problem']->value;
+
+            //Also change the status to closed,//Investigation Incident Closed.
+            $resolved_status=$this->getStatusIdByStatusName('resolve');
+            $closed_status=$this->getStatusIdByStatusName('close');
+            $corrective_status_id=($this->getNonClosedCorrectiveActions($i_id))?$resolved_status:$closed_status;
+            $incident->StatusWithType->Status=$corrective_status_id;
+            $incident->CustomFields->c->complaint_resolved=1;
+            //Close the parent Incident as well.
+            $this->closeParentIncident($i_id);
+      }
+      else{
+        $incident->CustomFields->c->was_there_a_problem=(int)$formData['Incident.CustomFields.c.was_there_a_problem']->value;
+        //Also change the status to resolved.
+        $resolved_id=$this->getStatusIdByStatusName("resolved");
+        $incident->StatusWithType->Status=$resolved_id;
+        $incident->CustomFields->c->complaint_resolved=0;
+
+      }
 			if($formData['Incident.CustomFields.c.why1']->value){
             $incident->CustomFields->c->why1=$formData['Incident.CustomFields.c.why1']->value;
             $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.why1']->value;
@@ -1438,14 +1474,10 @@ public function setInvestigationClosureModel($data,$i_id){
 		      }
 			if($formData['Incident.CustomFields.c.root_cause_category']->value)
 			$incident->CustomFields->c->root_cause_category=(int)$formData['Incident.CustomFields.c.root_cause_category']->value;
-			//Also change the status to closed,//Investigation Incident Closed.
-      $incident->StatusWithType->Status=2;
-      $incident->CustomFields->c->complaint_resolved=1;
-      //Close the parent Incident as well.
-      $this->closeParentIncident($i_id);
 
-       $incident->save(RNCPHP\RNObject::SuppressAll);
-       RNCPHP\ConnectAPI::commit();
+
+       $incident->save();
+       //RNCPHP\ConnectAPI::commit();
 
 
             $arr['result']['transaction']['incident']['key']="i_id";
@@ -1466,29 +1498,32 @@ private function closeParentIncident($i_id){
   $incident = RNCPHP\Incident::fetch($parent_id);
   $incident->StatusWithType->Status=2;
   $incident->CustomFields->c->complaint_resolved=1;
-  $incident->save(RNCPHP\RNObject::SuppressAll);
-  RNCPHP\ConnectAPI::commit();
-
+  $incident->save();
+  //RNCPHP\ConnectAPI::commit();
 }
 
 function getStatusIdByStatusName($searchtext){
-	$incidents = RNCPHP\Incident::find("StatusWithType.Status.Name LIKE '%$searchtext%'" );
-		foreach ($incidents as $incident)
-		{
+  if($searchtext):
+    $status_list=RNCPHP\ConnectAPI::getNamedValues("RightNow\\Connect\\v1_2\\Incident.StatusWithType.Status");
+    $searchtext=strtolower($searchtext);
+    foreach($status_list as $status):
+      $lookup_name=strtolower($status->LookupName);
+      if(substr_count($lookup_name,$searchtext) > 0 ):
+      return $status->ID;
+      endif;
+    endforeach;
+endif;
+    return 0;
 
-		return $incident->StatusWithType->Status->ID;
-
-		}
-
-		return 0;
 }
 
 function getIncidentStatusListModel(){
   $statusList=array();
-  $query=RNCPHP\ROQL::queryObject("SELECT Incident from Incident")->next();
-  while($result=$query->next()):
-    $statusList[$result->StatusWithType->Status->ID]=$result->StatusWithType->Status->LookupName;
-  endwhile;
+  $status_list=RNCPHP\ConnectAPI::getNamedValues("RightNow\\Connect\\v1_2\\Incident.StatusWithType.Status");
+    foreach($status_list as $status):
+      $statusList[$status->ID]=$status->LookupName;
+    endforeach;
+
   return $statusList;
 }
 
@@ -1508,9 +1543,9 @@ function deliveryFind($delivery_no, $sold_to_customer_name){
 }
 
 function getActionItemAttachment($id){
-
+    initConnectAPI("FNT_CWS","FNTRocks!");
 	$action_item=RNCPHP\CFS\ActionItem::fetch($id);
-	//echo $action_item->FileAttachments[0]->getAdminURL();
+	//$action_item->FileAttachments[0]->getAdminURL();
 	return $action_item->FileAttachments;
 
 }
@@ -1527,6 +1562,7 @@ function getCorrectiveAction_Model($input){
 
 	return $data;
 }
+
 
 function getProdOrgLinking(){
 	$data=array();

@@ -13,9 +13,9 @@ class StatusFilter extends \RightNow\Libraries\Widget\Base {
         $ci->session->setSessionData($filter);
       endif;
       $getStatusList=($this->attrs['entity_type']->value=="action_item")?$ci->model('custom/CustomerFeedbackSystem')->getActionItemListModel():$ci->model('custom/CustomerFeedbackSystem')->getIncidentStatusListModel();
-      //$this->data['status_list']=$getStatusList;
+      $this->data['status_list']=$getStatusList;
       $this->data['status_filter_selected']=$ci->session->getSessionData('complaint_status_filter');
-      $this->data['status_list']=($this->attrs['entity_type']->value=="action_item")?array("open"=>"Open","closed"=>"Closed"):$ci->model('custom/CustomerFeedbackSystem')->getIncidentStatusListModel();
+      //$this->data['status_list']=($this->attrs['entity_type']->value=="action_item")?array("open"=>"Open","closed"=>"Closed"):$ci->model('custom/CustomerFeedbackSystem')->getIncidentStatusListModel();
       return parent::getData();
 
     }

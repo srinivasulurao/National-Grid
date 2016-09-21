@@ -11,14 +11,16 @@ Custom.Widgets.customer_feedback.DeliveryProductSelection = RightNow.Widgets.ext
     	var target_instance_id="";
                            YUI().use('event','node-event-delegate', function (Y) {
           if(parseInt(document.getElementsByClassName('prod_cat_sel').length) > 0 ){
-             var category_choosen= Y.all(".prod_cat_sel .rn_DisplayButton");
-             category_choosen.on("click", function (e) {
-           	 document.getElementsByClassName('delivery_line_item_list')[0].style.display="none";
-           	 document.getElementById('target_instance_id').value=category_choosen.get('id');
+               var category_choosen= Y.all(".prod_cat_sel .rn_DisplayButton");
+               category_choosen.on("click", function (e) {
+             	 document.getElementsByClassName('delivery_line_item_list')[0].style.display="none";
+             	 document.getElementById('target_instance_id').value=category_choosen.get('id');
 
-             });
-
+               });
          }
+
+        
+
              var IncidentDeliveryItem=Y.one(".rn_DeliveryProductSelection");
              IncidentDeliveryItem.on('click',function(e){
              cd=document.getElementsByClassName('incident_delivery_item');
@@ -30,11 +32,15 @@ Custom.Widgets.customer_feedback.DeliveryProductSelection = RightNow.Widgets.ext
                   product_selected[g++]=dm.value;
                }
               //alert(product_selected.join(','));
+
               document.getElementsByName('Incident.CustomFields.c.delivery_line_items')[0].value=product_selected.join(',');
               showHideProductFields();
              });
 
             //Body Clicker Starts Here
+
+
+
                 document.getElementsByClassName('prod_cat_sel')[0].onclick=function(event){
             	//explode_length1=event.target.outerHTML.split('aria-level="2"').length;
             	//explode_length2=event.target.outerHTML.split('aria-level="3"').length;
@@ -42,7 +48,7 @@ Custom.Widgets.customer_feedback.DeliveryProductSelection = RightNow.Widgets.ext
             	tid_plus=tid.split('Category_Button').join("Button")+'_Visible_Text';
 
             	select_cat=document.getElementById(tid_plus).innerHTML;
-            	//alert(select_cat);
+
             	product_explode=select_cat.split('Product').length;
 
             	if(parseInt(product_explode)==2){
@@ -70,6 +76,10 @@ Custom.Widgets.customer_feedback.DeliveryProductSelection = RightNow.Widgets.ext
 		               });
 
             	} //Body Clicker Ends Here
+              else{
+                document.getElementById('delivery_line_item_list').innerHTML='';
+                document.getElementsByName('Incident.CustomFields.c.delivery_line_items')[0].value="";
+              }
 
             }
 
@@ -116,11 +126,14 @@ Custom.Widgets.customer_feedback.DeliveryProductSelection = RightNow.Widgets.ext
       "form": form._parentForm
       }});
       label_exist=document.querySelectorAll('#delivery_line_item_label').length;
-
       phi_checked=document.querySelectorAll('.delivery_line_item_list input[type="checkbox"]:checked').length;
-      //alert(phi_checked);
+      //If the category is product only then throw the errow.
+      tid=document.querySelectorAll('.prod_cat_sel button')[0].id;
+      tid_plus=tid.split('Category_Button').join("Button")+'_Visible_Text';
+      select_cat=document.getElementById(tid_plus).innerHTML;
+      product_explode=select_cat.split('Product').length;
 
-      if(parseInt(label_exist) && parseInt(phi_checked)==0)
+      if(parseInt(product_explode)==2 && parseInt(phi_checked)==0)
       {
           errorLocation= args[0].data.error_location;
           document.getElementById('delivery_line_item_label').className = "rn_Label rn_ErrorLabel";
@@ -142,7 +155,6 @@ Custom.Widgets.customer_feedback.DeliveryProductSelection = RightNow.Widgets.ext
 
 function showHideProductFields(){
 var product_having_issue=document.getElementsByName('Incident.CustomFields.c.delivery_line_items')[0].value;
-//alert(product_having_issue);
 if(product_having_issue)
 document.getElementById('product_related_fields').style.display="block";
 else

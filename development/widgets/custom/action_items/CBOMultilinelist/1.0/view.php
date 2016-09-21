@@ -37,11 +37,15 @@ padding:5px 10px;
         <?php  $reportColumns = count($this->data['reportData']['headers']);
 		?>
 		<tr>
-		 <?php 
+		 <?php
 		 for($j = 0; $j < $reportColumns; $j++)
-		 {  
+		 {
+      //echo strip_tags($this->getHeader($this->data['reportData']['headers'][$j]));
+      $column=strip_tags($this->getHeader($this->data['reportData']['headers'][$j]));
+      $editColumn=(substr_count($column,"Edit"))?true:false;
+      $editWidth=($editColumn)?"'width:5%'":""; 
 		?>
-		<th>
+		<th style=<?php echo $editWidth; ?> >
 		<?php echo str_replace(":","",$this->getHeader($this->data['reportData']['headers'][$j])); ?>
 		</th>
 	 <?php } ?>

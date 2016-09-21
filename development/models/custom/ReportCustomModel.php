@@ -442,17 +442,8 @@ class ReportCustomModel extends \RightNow\Models\Report
 
 				if($ci->session->getSessionData('complaint_status_filter')){
 					  $filter=$this->getFilterByName($report_id,'Status');
-						$filter2=$this->getFilterByName($report_id,'Status2');
-
-						if($ci->session->getSessionData('complaint_status_filter')=="open"){
-						$searchArgs['search_field1']=array("name"=>$filter->result['fltr_id'],"oper"=>1,"val"=>1); //Not Started
-						$searchArgs['search_field2']=array("name"=>$filter->result['fltr_id'],"oper"=>1,"val"=>2); //Working
-				   	}
-					  if($ci->session->getSessionData('complaint_status_filter')=="closed"){
-							$searchArgs['search_field1']=array("name"=>$filter->result['fltr_id'],"oper"=>1,"val"=>3); //Completed
-							$searchArgs['search_field2']=array("name"=>$filter2->result['fltr_id'],"oper"=>1,"val"=>3); //Completed
-						}
-
+                      $sf_val=$ci->session->getSessionData('complaint_status_filter');
+                      $searchArgs['search_field1']=array("name"=>$filter->result['fltr_id'],"oper"=>1,"val"=>$sf_val);
 				}
 
 				if($ci->session->getSessionData('complaint_productline_filter')){
@@ -463,14 +454,13 @@ class ReportCustomModel extends \RightNow\Models\Report
 
 				if(!empty($srch) && $ci->session->getSessionData('complaint_filter')=='search_text')
 				{
-
-          $counter=2;
-          foreach($columns as $column):
-      		$filter=$this->getFilterByName($report_id,$column);
-          $val=($column=="Status")?$status_id:$srch;
-          $searchArgs['search_field'.$counter]=array("name"=>$filter->result['fltr_id'],"oper"=>7,"val"=>"%$val%");
-          $counter++;
-          endforeach;
+                  $counter=2;
+                  foreach($columns as $column):
+              		  $filter=$this->getFilterByName($report_id,$column);
+                      $val=($column=="Status")?$status_id:$srch;
+                      $searchArgs['search_field'.$counter]=array("name"=>$filter->result['fltr_id'],"oper"=>7,"val"=>"%$val%");
+                      $counter++;
+                  endforeach;
 				}
 			}
 

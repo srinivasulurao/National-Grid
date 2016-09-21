@@ -5,8 +5,8 @@ echo "<label>File Attachments</label><ul class='fileAttachment'>";
 foreach($this->data['attachments'] as $attachment):
 	$fileName=$attachment->FileName;
   if($this->attrs['type']->value=="action_items"){
-	//$fileUrl=$attachment->getAdminURL();
-	$fileUrl="/ci/fattach/get/{$attachment->ID}/{$attachment->CreatedTime}/filename/".urlencode($attachment->FileName);
+	$fileUrl=$attachment->getAdminURL();
+	//$fileUrl="/ci/fattach/get/{$attachment->ID}/{$attachment->CreatedTime}/filename/".urlencode($attachment->FileName);
 	}
 	else{
 	$fileUrl="/ci/fattach/get/{$attachment->ID}/{$attachment->CreatedTime}/filename/".urlencode($attachment->FileName);
