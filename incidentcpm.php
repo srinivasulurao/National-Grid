@@ -30,20 +30,63 @@ class IncidentHandler implements RNCPM\ObjectEventHandler
           $parent_id=$incident->CustomFields->CFS->Incident->ID;
           $allInvestigationClosed=true;
               if($parent_id){
-                 $query=RNCPHP\ROQL::queryObject("SELECT Incident FROM Incident WHERE Incident.CustomFields.CFS.Incident.ID='$parent_id'")->next();
-                    while($result=$query->next()):
-                          if($result->StatusWithType->Status->ID!=2):
-                          $allInvestigationClosed=false;
-                          break;
-                          endif;
-                    endwhile;
 
-                    if($allInvestigationClosed):
-                      $parent_incident=RNCPHP\Incident::fetch($parent_id);
-                      $parent_incident->StatusWithType->Status=102; //Review Id.
-                      $parent_incident->save(RNCPHP\RNObject::SuppressAll);
-                      RNCPHP\ConnectAPI::commit();
-                    endif;
+                    //CPM Part1.
+                      $query=RNCPHP\ROQL::queryObject("SELECT Incident FROM Incident WHERE Incident.CustomFields.CFS.Incident.ID='$parent_id'")->next();
+                        while($result=$query->next()):
+                              if($result->StatusWithType->Status->ID!=2):
+                              $allInvestigationClosed=false;
+                              break;
+                              endif;
+                        endwhile;
+
+                        if($allInvestigationClosed):
+                          $parent_incident=RNCPHP\Incident::fetch($parent_id);
+                          $parent_incident->StatusWithType->Status=102; //Review Id.
+                          $parent_incident->save(RNCPHP\RNObject::SuppressAll);
+                          RNCPHP\ConnectAPI::commit();
+                        endif;
+
+                        exit;
+                        // //CPM Part 2.
+                        // ################### Make it resolved, ########################################
+                        // # 1). if the corrective Actions are remaining.
+                        // # 2). Cost Value is empty.
+                        // # 3). Formal Response=1 & Formal Response Completed=0.
+                        // ##############################################################################
+
+                        // $parent_incident=RNCPHP\Incident::fetch($incident->CustomFields->CFS->Incident->ID);
+                        // $cost=(int)$parent_incident->CustomFields->c->cost;
+                        // $formal_response=(int)$parent_incident->CustomFields->c->formal_response;
+                        // $formal_response_completed=(int)$parent_incident->CustomFields->c->formal_response_completed;
+                        
+                        // $results=RNCPHP\ROQL::query("select count(*) as pending  from CFS.CorrectiveAction WHERE CFS.CorrectiveAction.Incident='{$incident->ID}' AND CFS.CorrectiveAction.Complete='0'")->next();
+                        // while($result=$results->next()):
+                        // $corrective_actions_pending=(int)$result['pending'];
+                        // break;
+                        // endwhile;
+
+                        // if($corrective_actions_pending or !$allInvestigationClosed or !$cost or $formal_response or !$formal_response_completed):
+                             
+                        //      $parent_incident->StatusWithType->Status=106; //Resolved.
+                        //      $parent_incident->save(RNCPHP\RNObject::SuppressAll);
+                        //      RNCPHP\ConnectAPI::commit();
+                        // endif;
+
+                        // ################### Make it Closed, #########################################
+                        // # 1). if the corrective Actions are remaining.
+                        // # 2). Cost Value is not empty.
+                        // # 3). Formal Response=0 & Formal Response Completed=1.
+                        // # 4). If all are true then you should close it.
+                        // ##############################################################################
+                        
+                        // if(!$corrective_actions_pending && $allInvestigationClosed && $cost && !$formal_response && $formal_response_completed):
+                             
+                        //      $parent_incident->StatusWithType->Status=2; //closed.
+                        //      $parent_incident->save(RNCPHP\RNObject::SuppressAll);
+                        //      RNCPHP\ConnectAPI::commit();
+                        // endif;
+
               }
          }
       }
