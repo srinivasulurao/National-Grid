@@ -1,5 +1,5 @@
 <?php
-namespace Custom\Models;
+namespace Custom\Models; 
 use RightNow\Connect\v1_2 as RNCPHP;
 //require_once( get_cfg_var( 'doc_root' ).'/include/ConnectPHP/Connect_init.phph' );
 //initConnectAPI();
@@ -273,7 +273,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $incident->CustomFields->c->request_type=intval($formData['Incident.CustomFields.c.request_type']->value);
                 $incident->CustomFields->CFS->Supplier=intval($formData['Name']->value);
                 //$incident->CustomFields->c->DeliveryShipToCustomerName=$formData['DeliveryShipToCustomerName']->value;
-                //$incident->PrimaryContact = RNCPHP\Contact::fetch($contact->ID);
+                //$incident->PrimaryContact = RNCPHP\Contact::fetch($contact->ID);  
                 $incident->CustomFields->c->request_type=intval($formData['Incident.CustomFields.c.request_type']->value);
                 $incident->CustomFields->c->supplier_order_number=$formData['Incident.CustomFields.c.supplier_order_number']->value;
                 $incident->CustomFields->c->proposed_solution=$formData['Incident.CustomFields.c.proposed_solution']->value;
@@ -459,6 +459,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $delivery=$this->getDelivery($formData['CFS$Delivery']->value);
                 //$incident->CustomFields->c->sold_to_customer_name=$delivery['SoldToCustomerName'];
                 $incident->CustomFields->CFS->Delivery=intval($delivery['ID']);
+                $incident->CustomFields->c->plant=$delivery['Plant']; //We have to store the plant name for console.
             endif;
             if($org_id){
               $incident->Organization = RNCPHP\Organization::fetch($org_id);
@@ -558,6 +559,7 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
                 $delivery=$this->getDelivery($formData['CFS$Delivery']->value);
                 //$incident->CustomFields->c->sold_to_customer_name=$delivery['SoldToCustomerName'];
                 $incident->CustomFields->CFS->Delivery=intval($delivery['ID']);
+                $incident->CustomFields->c->plant=$delivery['Plant'];
             endif;
             if($formData['Incident.CustomFields.c.sold_to_customer_name']->value)
                 $incident->CustomFields->c->sold_to_customer_name=$formData['Incident.CustomFields.c.sold_to_customer_name']->value;
@@ -568,8 +570,10 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
             if(1)
                 $this->updateIncidentDeliveryLineItems($formData['Incident.CustomFields.c.delivery_line_items']->value,$i_id);
             if($formData['Incident.CustomFields.c.complaint_resolved']->value):
-            $incident->CustomFields->c->complaint_resolved=(int)$formData['Incident.CustomFields.c.complaint_resolved']->value;
-            $incident->StatusWithType->Status=2; //Complaint Closed.
+                $incident->CustomFields->c->complaint_resolved=(int)$formData['Incident.CustomFields.c.complaint_resolved']->value;
+                $incident->StatusWithType->Status=2; //Complaint Closed.
+                //We have to take the help of the CPM now.##########
+                //$this->resolveCustomerFeedbackAccordingly($i_id);               
             endif;
 
             if($formData['Incident.CustomFields.c.customer_contact_name']->value)
@@ -619,6 +623,60 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
 
     }
 
+    public function resolveCustomerFeedbackAccordingly($parent_id){
+
+        $parent_incident=RNCPHP\Incident::fetch($parent_id);
+        $cost=(int)$parent_incident->CustomFields->c->cost;
+        $formal_response=(int)$parent_incident->CustomFields->c->formal_response;
+        $formal_response_completed=(int)$parent_incident->CustomFields->c->formal_response_completed;
+        $allInvestigationClosed=true;
+        $corrective_actions_pending=false;
+        $child_incidents=array();
+
+        ///Checking Part1.
+                      $query=RNCPHP\ROQL::queryObject("SELECT Incident FROM Incident WHERE Incident.CustomFields.CFS.Incident.ID='$parent_id'")->next();
+                        while($result=$query->next()):
+                              if($result->StatusWithType->Status->ID!=2):
+                              $allInvestigationClosed=false;
+                              break;
+                              endif;
+                        endwhile;
+
+                        while($result=$query->next()):
+                        $child_incidents[]=$result->ID;
+                        endwhile;
+
+        //Checking Part 2.
+                    
+                        foreach($child_incidents as $child_incident):
+                            $results=RNCPHP\ROQL::query("select count(*) as pending  from CFS.CorrectiveAction WHERE CFS.CorrectiveAction.Incident='{$child_incident}' AND CFS.CorrectiveAction.Complete='0'")->next();
+                                while($result=$results->next()):
+                                $corrective_actions_pending=(int)$result['pending'];
+                                break;
+                                endwhile;
+                        endforeach;
+
+                        if($corrective_actions_pending or !$allInvestigationClosed or !$cost or $formal_response or !$formal_response_completed):
+                             
+                             $parent_incident->StatusWithType->Status=106; //Resolved.
+                             $parent_incident->save();
+                             RNCPHP\ConnectAPI::commit();
+                        endif;
+
+                        ################### Make it Closed, #########################################
+                        # 1). if the corrective Actions are remaining.
+                        # 2). Cost Value is not empty.
+                        # 3). Formal Response=0 & Formal Response Completed=1.
+                        # 4). If all are true then you should close it.
+                        ##############################################################################
+                        
+                        if(!$corrective_actions_pending && $allInvestigationClosed && $cost && !$formal_response && $formal_response_completed):
+                             
+                             $parent_incident->StatusWithType->Status=2; //closed.
+                             $parent_incident->save();
+                             RNCPHP\ConnectAPI::commit();
+                        endif;
+    }
 
     public function insertIncidentDeliveryLineItems($delivery_line_items,$incident_id){
         $items=explode(",",$delivery_line_items);
@@ -678,7 +736,8 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
     }
 
     public function getOrganizationCondition($org_id){
-      $org=RNCPHP\Organization::Fetch($org_id);
+
+      $org=RNCPHP\Organization::fetch($org_id);
       if($org->Name=="CPC" or $org->Name=="cpc")
       return "CFS.Delivery.Organization<>''"; //Should not be empty.
       else
@@ -781,9 +840,9 @@ class CustomerFeedbackSystem extends \RightNow\Models\Base
         $ci=get_instance();
         $user=$ci->session->getProfile();
         $org_id=$user->org_id->value; 
-
+        $organizationCondition=$this->getOrganizationCondition($org_id);
         if($delivery_no){
-            $sql="select * from CFS.Delivery WHERE CFS.Delivery.Delivery='$delivery_no' AND CFS.Delivery.Organization='$org_id' LIMIT 0,10";
+            $sql="select * from CFS.Delivery WHERE CFS.Delivery.Delivery='$delivery_no' AND $organizationCondition LIMIT 0,10";
             $sql_instance = RNCPHP\ROQL::query($sql)->next(); 
             $data="";
             while($delivery = $sql_instance->next())
@@ -1409,6 +1468,52 @@ xyz;
         return json_encode($arr);
 }
 
+public function sendFNTConsoleMailModel($client_mail,$message,$i_id){
+    $incident = RNCPHP\Incident::fetch($i_id);
+    $incident->Threads = new RNCPHP\ThreadArray();
+    $incident->Threads[0] = new RNCPHP\Thread();
+    $incident->Threads[0]->EntryType = new RNCPHP\NamedIDOptList();
+    $incident->Threads[0]->EntryType->ID = 3; // Used the ID here. See the Thread object for definition
+    $incident->Threads[0]->Text =$message;
+    $incident->save();
+
+    //Now Send the mail to the client.
+    if($client_mail):
+    $FNTConfig = RNCPHP\FNT\Config::fetch(1);
+                $p_exp=time()+($FNTConfig->LinkExpirationHours*3600);
+                $p_created=str_replace("=","",base64_encode($client_mail));
+                $p_tok=str_replace("=","",base64_encode($FNTConfig->SecurityString));
+                $p_ques=str_replace("=","",base64_encode($message));
+                $p_asked_by=str_replace("=","",base64_encode("Chevron Admin"));
+                $site_host=($_SERVER['HTTP_HOST']=="cpchem.custhelp.com")?"http://cpchem.custhelp.com":"http://cpchem--pro.custhelp.com";
+                
+                $html_body=<<<xyz
+                <div style='font-family:arial;line-height:30px'>
+                <b>Hello User,</b><br>
+                Your input is required to take further action for a customer feedback complaint (Ref-No: {$incident->LookupName}). <br>
+                Please click the link below to provide your response.<br>
+                <a href='$site_host/cgi-bin/cpchem.cfg/php/custom/oracle/fnt/fnt_incident_update.php?p_i_id={$incident->ID}&p_exp={$p_exp}&p_tok={$p_tok}&p_created={$p_created}&p_ques={$p_ques}&p_asked_by={$p_asked_by}'>Click To Respond</a>
+                <br><br>
+                Thanks a lot<br>
+                CPChem Team<br>
+                <img src='{$_SERVER['HTTP_HOST']}/euf/assets/themes/standard/images/CPChem_logo.png' style='width:100px'>
+                </div>
+xyz;
+                    $mm = new RNCPHP\MailMessage();
+                //set TO,CC,BCC fields as necessary
+                    $mm->To->EmailAddresses = array($client_mail);
+                //set subject
+                    $mm->Subject = "CPCHEM-Forward & Tracking of Complaint No ".$incident->LookupName;
+                //set body of the email
+                    $mm->Body->Html = $html_body;
+                //set marketing options
+                    $mm->Options->IncludeOECustomHeaders = false;
+                //send email
+                    $mm->send();
+                    return "Mail Sent Successfully !";
+               endif;     
+}
+
 public function contactLookUpSearchModel($input){
 	if($input){
 		$html="";
@@ -1440,27 +1545,15 @@ public function setInvestigationClosureModel($data,$i_id){
 
         try{
             $incident = RNCPHP\Incident::fetch($i_id);
-            $incident->CustomFields->c->was_there_a_problem=(int)$formData['Incident.CustomFields.c.was_there_a_problem']->value;
-      if($formData['Incident.CustomFields.c.was_there_a_problem']->value){
-            $incident->CustomFields->c->was_there_a_problem=$formData['Incident.CustomFields.c.was_there_a_problem']->value;
 
-            //Also change the status to closed,//Investigation Incident Closed.
+            $incident->CustomFields->c->was_there_a_problem=(int)$formData['Incident.CustomFields.c.was_there_a_problem']->value;
             $resolved_status=$this->getStatusIdByStatusName('resolve');
             $closed_status=$this->getStatusIdByStatusName('close');
             $corrective_status_id=($this->getNonClosedCorrectiveActions($i_id))?$resolved_status:$closed_status;
             $incident->StatusWithType->Status=$corrective_status_id;
             $incident->CustomFields->c->complaint_resolved=1;
-            //Close the parent Incident as well.
-            $this->closeParentIncident($i_id);
-      }
-      else{
-        $incident->CustomFields->c->was_there_a_problem=(int)$formData['Incident.CustomFields.c.was_there_a_problem']->value;
-        //Also change the status to resolved.
-        $resolved_id=$this->getStatusIdByStatusName("resolved");
-        $incident->StatusWithType->Status=$resolved_id;
-        $incident->CustomFields->c->complaint_resolved=0;
-
-      }
+           
+      
 			if($formData['Incident.CustomFields.c.why1']->value){
             $incident->CustomFields->c->why1=$formData['Incident.CustomFields.c.why1']->value;
             $incident->CustomFields->c->root_cause=$formData['Incident.CustomFields.c.why1']->value;
@@ -1486,7 +1579,9 @@ public function setInvestigationClosureModel($data,$i_id){
 
 
        $incident->save();
-       //RNCPHP\ConnectAPI::commit();
+       RNCPHP\ConnectAPI::commit();
+
+       //Now CPM Will update the parent incident. 
 
 
             $arr['result']['transaction']['incident']['key']="i_id";
@@ -1618,5 +1713,7 @@ public function getServiceProductList(){
 
   return $productList;
 }
+
+
 
 } //Class Ends Here !

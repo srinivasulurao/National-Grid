@@ -1,0 +1,37 @@
+/**
+ * base.css: Base CSS for CorrectiveActions
+ */
+.rn_CorrectiveActions {
+
+}
+
+	.tick,.untick{
+		padding:0 8px;
+		position:relative;
+		display:inline-block;
+		border-radius:50%;
+		margin-left:20px;
+	}
+	.tick{
+		background:seagreen;
+		color:white
+	}
+	
+	.untick{
+		background:red;
+		color:white;
+	}
+	#add_corrective_action{
+		margin: auto;
+		margin-top:10px;
+    //box-shadow: 0 0 14px lightgrey;
+    //width: 60%;
+    padding: 10px;
+    //border-radius: 10px;
+    border: 1px solid lightgrey;
+	}
+	
+	#dialog{
+		box-shadow:0  0 10px black;
+	}
+	
